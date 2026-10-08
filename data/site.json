@@ -16,11 +16,38 @@
   "ads_enabled": false,
   "new_code_days": 3,
   "nav": [
-    ["Codes", "/"],
-    ["Styles", "/styles/"],
-    ["Flows", "/flows/"],
-    ["Tier List", "/tier-list/"],
-    ["Free Spins", "/free-spins/"],
-    ["Guides", "/guides/"]
-  ]
+    [
+      "Codes",
+      "/"
+    ],
+    [
+      "Styles",
+      "/styles/"
+    ],
+    [
+      "Flows",
+      "/flows/"
+    ],
+    [
+      "Tier List",
+      "/tier-list/"
+    ],
+    [
+      "Free Spins",
+      "/free-spins/"
+    ],
+    [
+      "Next Update",
+      "/next-update/"
+    ],
+    [
+      "Guides",
+      "/guides/"
+    ]
+  ],
+  "indexnow_key": "0c8adacaff658fe07fdce553853ef895",
+  "tagline": "Every working Blue Lock: Rivals code, checked every 30 minutes",
+  "published": "2024-11-20",
+  "update_weekday": 5,
+  "update_hour_pt": 10
 }

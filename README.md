@@ -51,7 +51,20 @@ Edit on github.com and commit — the site rebuilds automatically on every push.
 
 ## Pages
 
-`/` codes · `/expired-codes/` · `/how-to-redeem/` · `/free-spins/` · `/styles/` · `/flows/` · `/tier-list/` · `/controls/` · `/beginners-guide/` · `/trello-discord/` · `/updates/` · `/guides/` · `/about/` · `/privacy-policy.html` · `404` — plus `sitemap.xml`, `feed.xml` (RSS), `robots.txt`, `ads.txt` and a public `api/codes.json`.
+`/` codes, `/codes-not-working/`, `/how-to-redeem/`, `/free-spins/`, `/styles/`, `/flows/`, `/tier-list/`, `/controls/`, `/beginners-guide/`, `/next-update/` (live countdown), `/updates/`, `/expired-codes/`, `/trello-discord/`, `/guides/`, `/about/`, `/privacy-policy.html` and a 404 page.
+
+Also generated on every build: `sitemap.xml`, `feed.xml` (RSS), `robots.txt`, `ads.txt`, `site.webmanifest`, `og.png` share image (current month and code counts), app icons, an IndexNow key file and a public `api/codes.json`.
+
+## SEO built in
+
+- Titles and descriptions follow the keyword brief; month and year update automatically.
+- Structured data on every page: Organization, WebSite, Article/WebPage, BreadcrumbList, plus FAQPage, HowTo and an ItemList of working codes where relevant.
+- A one-sentence answer naming every working code sits at the top of the home page for featured snippets.
+- Visible "Updated … by …" byline, on-page table of contents and related-guide links on every page.
+- When codes change, Bing and other IndexNow engines are pinged instantly (custom domain only).
+- While the site runs on the github.io preview it is automatically set to noindex, so it never competes with your live domain. Adding the custom domain switches indexing on by itself.
+
+Fonts: Barlow Condensed (bundled in `scripts/fonts/` for the share image) is under the SIL Open Font License.
 
 ## Local commands
 

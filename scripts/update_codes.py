@@ -370,6 +370,23 @@ def notify_discord(added, site_url):
         print(f"  ! Discord notify failed: {ex}")
 
 
+def ping_indexnow(site):
+    """Tell Bing/Yandex (IndexNow) the codes pages changed. Skipped on the github.io preview."""
+    key, base = site.get("indexnow_key"), site.get("base_url", "")
+    if not key or not base or os.environ.get("BASE_PATH"):
+        return
+    host = urlparse(base).netloc
+    urls = [base + p for p in ("/", "/expired-codes/", "/updates/", "/next-update/")]
+    body = json.dumps({"host": host, "key": key, "keyLocation": f"{base}/{key}.txt", "urlList": urls}).encode()
+    try:
+        req = urllib.request.Request("https://api.indexnow.org/indexnow", data=body,
+                                     headers={"Content-Type": "application/json; charset=utf-8", "User-Agent": UA})
+        urllib.request.urlopen(req, timeout=TIMEOUT).read()
+        print("  ✓ IndexNow pinged")
+    except Exception as ex:
+        print(f"  ! IndexNow ping failed: {ex}")
+
+
 def gh_output(**kv):
     path = os.environ.get("GITHUB_OUTPUT")
     if path:
@@ -482,6 +499,7 @@ def main():
         save("codes.json", codes)
         save("updates.json", updates)
         notify_discord(report["added"], site.get("base_url", ""))
+        ping_indexnow(site)
     gh_output(changed=str(changed).lower(), state_changed=str(state_changed).lower(), added=",".join(a["code"] for a in report["added"]))
     print("Changes written." if changed else "No code changes.")
     return 0

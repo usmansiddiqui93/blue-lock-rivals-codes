@@ -33,14 +33,24 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Install image library (share image + icons)
+        run: pip install --quiet pillow
+
       - name: Run tests
         run: python tests/test_updater.py
+
+      # "" on a custom domain, "/blue-lock-rivals-codes" on the github.io preview,
+      # so links, robots rules and search pings are right on both.
+      - name: Read Pages settings
+        id: pages
+        uses: actions/configure-pages@v5
 
       - name: Check sources for new / expired codes
         id: tracker
         if: github.event_name != 'push'
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          BASE_PATH: ${{ steps.pages.outputs.base_path }}
         run: |
           python scripts/update_codes.py ${{ inputs.force && '--force' || '' }}
 
@@ -54,12 +64,6 @@ jobs:
           [ -n "${{ steps.tracker.outputs.added }}" ] && MSG="New code(s): ${{ steps.tracker.outputs.added }}"
           git commit -m "$MSG" || exit 0
           git push
-
-      # Tells us whether the site is on a custom domain ("" ) or the
-      # github.io preview ("/blue-lock-rivals-codes"), so links work on both.
-      - name: Read Pages settings
-        id: pages
-        uses: actions/configure-pages@v5
 
       - name: Build site
         env:
