@@ -41,6 +41,17 @@ UPDATES = load("updates.json")
 
 NOW = datetime.now(timezone.utc)
 
+# Sub-folder the site is served from. "" on the custom domain; "/blue-lock-rivals-codes"
+# on the github.io preview. The GitHub Action sets it automatically from Pages config.
+BASE = os.environ.get("BASE_PATH", "").rstrip("/")
+PREVIEW = bool(BASE)
+
+
+def with_base(markup: str) -> str:
+    if not BASE:
+        return markup
+    return re.sub(r'((?:href|src)=")/(?!/)', rf'\1{BASE}/', markup)
+
 
 def parse_dt(s):
     try:
@@ -247,7 +258,7 @@ def head(page):
 <title>{e(title)}</title>
 <meta name="description" content="{e(desc)}">
 <link rel="canonical" href="{e(url)}">
-<meta name="theme-color" content="#FFFFFF">
+<meta name="theme-color" content="#FFFFFF">{'<meta name="robots" content="noindex">' if PREVIEW else ''}
 <meta name="google-adsense-account" content="{e(SITE['adsense_client'])}">
 <meta property="og:type" content="article"><meta property="og:site_name" content="{e(SITE['name'])}">
 <meta property="og:title" content="{e(title)}"><meta property="og:description" content="{e(desc)}">
@@ -302,7 +313,7 @@ def render(page):
     body = page["body"]() if callable(page["body"]) else page["body"]
     side = sidebar() if page.get("sidebar", True) else ""
     grid = f'<div class="grid wrap"><main>{body}</main>{side}</div>' if side else f'<div class="wrap" style="padding:30px 20px 60px"><main>{body}</main></div>'
-    return head(page) + "<body>" + header(page) + hero(page) + grid + footer() + "</body></html>"
+    return with_base(head(page) + "<body>" + header(page) + hero(page) + grid + footer() + "</body></html>")
 
 
 # --------------------------------------------------------------------------- #
