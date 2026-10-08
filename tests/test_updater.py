@@ -24,6 +24,17 @@ class Extract(unittest.TestCase):
         self.assertIn("SENDOUNEXT", r["expired"])
         self.assertNotIn("CODE", r["expired"])
 
+    def test_codes_starting_with_digits_are_kept_whole(self):
+        html = ("<h2>Active codes</h2><ul><li>2027BLR - 5 Lucky Spins</li><li>1. 44PANTHER - 5 Lucky Flows</li>"
+                "<li>3V3TIME: 5 Lucky Spins</li></ul><h2>Expired codes</h2><ul><li>1MLIKES</li><li>2. 25SNOWLOCK</li></ul>")
+        r = u.extract(html)
+        self.assertEqual(set(r["active"]), {"2027BLR", "44PANTHER", "3V3TIME"})
+        self.assertEqual(set(r["expired"]), {"1MLIKES", "25SNOWLOCK"})
+
+    def test_numbered_table_rows(self):
+        html = "<h2>Active codes</h2><table><tr><td>1</td><td>2BVISITS!</td><td>5 Lucky Spins</td></tr></table>"
+        self.assertEqual(set(u.extract(html)["active"]), {"2BVISITS!"})
+
     def test_reward_parse(self):
         self.assertEqual(u.parse_reward("five lucky style spins and five lucky flow spins"), (5, 5))
         self.assertEqual(u.parse_reward("5 Lucky Flows"), (0, 5))

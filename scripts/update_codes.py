@@ -124,7 +124,7 @@ class Blocks(HTMLParser):
 # Code extraction
 # --------------------------------------------------------------------------- #
 
-CODE_RE = re.compile(r"^[`*\s\d.)#]*([A-Za-z0-9][A-Za-z0-9!@#.?\-_]{2,31})[`*]*(?:\s*(?:[-–—:|]|\(|$)\s*(.*))?$")
+CODE_RE = re.compile(r"^[`*\s]*(?:(?:\d{1,3}[.)]|#)\s+)?[`*\s]*([A-Za-z0-9][A-Za-z0-9!@#.?\-_]{2,31})[`*]*(?:\s*(?:[-–—:|]|\(|$)\s*(.*))?$")
 REWARD_HINT = re.compile(r"\b(spins?|flows?|yen|cash|reward|lucky|style)\b", re.I)
 EXPIRED_HEAD = re.compile(r"\b(expired|inactive|no longer work|old codes|retired|invalid)\b", re.I)
 ACTIVE_HEAD = re.compile(r"\b(active|working|new|valid|latest|all)\b.*\bcodes?\b|\bcodes?\b.*\b(active|working)\b", re.I)
