@@ -1,0 +1,26 @@
+{
+  "name": "Blue Lock Rivals Codes",
+  "domain": "blue-lock-rivals-codes.com",
+  "base_url": "https://blue-lock-rivals-codes.com",
+  "game_name": "Blue Lock: Rivals",
+  "roblox_place_id": 18668065416,
+  "roblox_url": "https://www.roblox.com/games/18668065416/Blue-Lock-Rivals",
+  "roblox_group_url": "https://www.roblox.com/communities/34671275",
+  "discord_url": "https://discord.com/invite/bluelockrivals",
+  "trello_url": "https://trello.com/b/R9gCGamp/blue-lock-rivals",
+  "developer": "Untitled Secret Game",
+  "author": "Muhammad Usman Siddiqui",
+  "author_role": "Blue Lock Rivals player & site maintainer",
+  "contact_email": "privacy@blue-lock-rivals-codes.com",
+  "adsense_client": "ca-pub-8365810991639784",
+  "ads_enabled": false,
+  "new_code_days": 3,
+  "nav": [
+    ["Codes", "/"],
+    ["Styles", "/styles/"],
+    ["Flows", "/flows/"],
+    ["Tier List", "/tier-list/"],
+    ["Free Spins", "/free-spins/"],
+    ["Guides", "/guides/"]
+  ]
+}

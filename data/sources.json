@@ -1,0 +1,16 @@
+{
+  "_help": "Pages the updater reads every run. A new code is published only when at least `min_confirmations` sources list it as active and none list it as expired. Add or remove sources freely; set enabled:false to pause one.",
+  "min_confirmations": 2,
+  "expire_votes": 2,
+  "miss_runs_before_expire": 12,
+  "max_adds_per_run": 6,
+  "max_expires_per_run": 8,
+  "sources": [
+    {"name": "Pocket Tactics", "url": "https://www.pockettactics.com/blue-lock-rivals/codes", "enabled": true},
+    {"name": "Beebom", "url": "https://beebom.com/blue-lock-rivals-codes/", "enabled": true},
+    {"name": "Dexerto", "url": "https://www.dexerto.com/roblox/blue-lock-rivals-codes-3252484/", "enabled": true},
+    {"name": "Bloxodes", "url": "https://bloxodes.com/codes/blue-lock-rivals", "enabled": true},
+    {"name": "Insider Gaming", "url": "https://insider-gaming.com/all-roblox-blue-lock-rival-codes-rewards/", "enabled": true},
+    {"name": "Power Up Gaming", "url": "https://powerupgaming.co.uk/2025/01/06/blue-lock-rivals-codes/", "enabled": true}
+  ]
+}

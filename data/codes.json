@@ -1,0 +1,884 @@
+{
+ "updated": "2026-10-09T00:00:00Z",
+ "last_checked": "2026-10-09T00:00:00Z",
+ "active": [
+  {
+   "code": "DONREVAMP",
+   "reward": "5 Lucky Style Spins + 5 Lucky Flow Spins",
+   "spins": 5,
+   "flows": 5,
+   "added": "2026-10-04",
+   "sources": [
+    "seed"
+   ]
+  },
+  {
+   "code": "SENDOUNEXT",
+   "reward": "5 Lucky Flow Spins",
+   "spins": 0,
+   "flows": 5,
+   "added": "2026-10-04",
+   "sources": [
+    "seed"
+   ]
+  },
+  {
+   "code": "ACEEATER",
+   "reward": "5 Lucky Style Spins",
+   "spins": 5,
+   "flows": 0,
+   "added": "2026-10-04",
+   "sources": [
+    "seed"
+   ]
+  }
+ ],
+ "expired": [
+  {
+   "code": "SNUFFYUPD"
+  },
+  {
+   "code": "WSNUFFY"
+  },
+  {
+   "code": "UBERSVOTE"
+  },
+  {
+   "code": "NEWMASTER"
+  },
+  {
+   "code": "SORRYFORNIKODELAY"
+  },
+  {
+   "code": "NIKOHERE"
+  },
+  {
+   "code": "GATEKEEPOVER"
+  },
+  {
+   "code": "QOLNEXTWEEK!"
+  },
+  {
+   "code": "NELKING"
+  },
+  {
+   "code": "NIKOSOON"
+  },
+  {
+   "code": "UBERSMONTH"
+  },
+  {
+   "code": "SORRYLOADING"
+  },
+  {
+   "code": "UBERSTAKEOVER"
+  },
+  {
+   "code": "KINGNEXTWEEK"
+  },
+  {
+   "code": "EGODEFENSE"
+  },
+  {
+   "code": "SORRY4DELAY!!"
+  },
+  {
+   "code": "FIXESLATERTODAY"
+  },
+  {
+   "code": "RINTODAY"
+  },
+  {
+   "code": "INSANETRAILERSOON"
+  },
+  {
+   "code": "DESTROYERMODE"
+  },
+  {
+   "code": "HALFBAKED"
+  },
+  {
+   "code": "RINSOON"
+  },
+  {
+   "code": "SAERRY4DELAY"
+  },
+  {
+   "code": "SAEREWORK"
+  },
+  {
+   "code": "MAGICIAN"
+  },
+  {
+   "code": "BIGTRAILERSOON"
+  },
+  {
+   "code": "NESSTODAY"
+  },
+  {
+   "code": "NESSNEXTWEEK"
+  },
+  {
+   "code": "TEAMSPAIN"
+  },
+  {
+   "code": "TEAMBRAZIL"
+  },
+  {
+   "code": "SEMIFINALS"
+  },
+  {
+   "code": "NEWMAP"
+  },
+  {
+   "code": "WORLDTOURNAMENTPART3"
+  },
+  {
+   "code": "REBALANCES"
+  },
+  {
+   "code": "QUARTERFINALSOON"
+  },
+  {
+   "code": "QOLUPD"
+  },
+  {
+   "code": "NELSHIDOU"
+  },
+  {
+   "code": "DEMON"
+  },
+  {
+   "code": "NEWCHEMSOON"
+  },
+  {
+   "code": "WORLDTOURNAMENT"
+  },
+  {
+   "code": "U20CUP"
+  },
+  {
+   "code": "SUMMERUPDATE"
+  },
+  {
+   "code": "GAGAREWORK"
+  },
+  {
+   "code": "BEARCLAW"
+  },
+  {
+   "code": "ADDRESSME"
+  },
+  {
+   "code": "NELEVENT"
+  },
+  {
+   "code": "NEL2.0"
+  },
+  {
+   "code": "MASSIVEUPDATE"
+  },
+  {
+   "code": "BREAKDANCE"
+  },
+  {
+   "code": "NELTEAMSHYPE"
+  },
+  {
+   "code": "KIYORARELEASE"
+  },
+  {
+   "code": "HIORIREWORK"
+  },
+  {
+   "code": "SNOWFLAKE"
+  },
+  {
+   "code": "NELHIORI"
+  },
+  {
+   "code": "HIORIHYPE"
+  },
+  {
+   "code": "MINIUPDATE"
+  },
+  {
+   "code": "MBFORDELAY"
+  },
+  {
+   "code": "REORETURN"
+  },
+  {
+   "code": "HIORISOON"
+  },
+  {
+   "code": "MASTEROFALLTRADES"
+  },
+  {
+   "code": "SAEW"
+  },
+  {
+   "code": "REWORKW"
+  },
+  {
+   "code": "REOSOON"
+  },
+  {
+   "code": "REOHYPE"
+  },
+  {
+   "code": "WPATCH"
+  },
+  {
+   "code": "THEJOKER"
+  },
+  {
+   "code": "KUNIGAMIW"
+  },
+  {
+   "code": "WILDCARD"
+  },
+  {
+   "code": "SPEEDSTER"
+  },
+  {
+   "code": "CHIGIRIHERE"
+  },
+  {
+   "code": "44PANTHER"
+  },
+  {
+   "code": "OTOYAUPD"
+  },
+  {
+   "code": "NINJASPINS"
+  },
+  {
+   "code": "CHIGIRISOON"
+  },
+  {
+   "code": "NEWJERSEYS"
+  },
+  {
+   "code": "NEWIMPACTS"
+  },
+  {
+   "code": "NELQUEST"
+  },
+  {
+   "code": "METAVISION"
+  },
+  {
+   "code": "EGOISTNOW"
+  },
+  {
+   "code": "ISAGITODAY"
+  },
+  {
+   "code": "NAGITHEBEST"
+  },
+  {
+   "code": "NELNAGIW"
+  },
+  {
+   "code": "EasterYuki"
+  },
+  {
+   "code": "EggStyle"
+  },
+  {
+   "code": "SORRYDELAYEASTER"
+  },
+  {
+   "code": "RANKEDRETURN"
+  },
+  {
+   "code": "ITSBACK"
+  },
+  {
+   "code": "TIMETIME"
+  },
+  {
+   "code": "NELSTYLESPINS"
+  },
+  {
+   "code": "NELLUCKY"
+  },
+  {
+   "code": "NELPASS"
+  },
+  {
+   "code": "KARASUHYPE"
+  },
+  {
+   "code": "CROWCODE"
+  },
+  {
+   "code": "CROWFLOWCODE"
+  },
+  {
+   "code": "NELSORRY"
+  },
+  {
+   "code": "RIPGENERATIONAL"
+  },
+  {
+   "code": "NAGIEVOLUTION"
+  },
+  {
+   "code": "3V3TIME"
+  },
+  {
+   "code": "HYP3"
+  },
+  {
+   "code": "FLOW3V3"
+  },
+  {
+   "code": "RAICHIHYPE"
+  },
+  {
+   "code": "CODEANGRY"
+  },
+  {
+   "code": "LUNARYEAR"
+  },
+  {
+   "code": "VALENTINESDAY"
+  },
+  {
+   "code": "HEARTSTYLE"
+  },
+  {
+   "code": "HEARTFLOW"
+  },
+  {
+   "code": "RINRIN"
+  },
+  {
+   "code": "NELQUEST2"
+  },
+  {
+   "code": "NELFLOWSPINS"
+  },
+  {
+   "code": "NESSFLOW"
+  },
+  {
+   "code": "AFKUPDATE"
+  },
+  {
+   "code": "YENUPDATE"
+  },
+  {
+   "code": "NESSMAGICIAN"
+  },
+  {
+   "code": "ITSNESS"
+  },
+  {
+   "code": "RABBITPULL"
+  },
+  {
+   "code": "SHARKTIME"
+  },
+  {
+   "code": "KURONAUNVAULTING"
+  },
+  {
+   "code": "WHATSNESS"
+  },
+  {
+   "code": "2026Battlepass"
+  },
+  {
+   "code": "2026Crate"
+  },
+  {
+   "code": "SnowlockIsOver"
+  },
+  {
+   "code": "FIREWORKMONSTER"
+  },
+  {
+   "code": "FINALFESTIVE"
+  },
+  {
+   "code": "RIPISAGI5"
+  },
+  {
+   "code": "NEWYEARHYPE"
+  },
+  {
+   "code": "BUILDTHEROCKET"
+  },
+  {
+   "code": "2026BLR"
+  },
+  {
+   "code": "25SNOWLOCK"
+  },
+  {
+   "code": "SANTALAVINHOHERE"
+  },
+  {
+   "code": "FIREWORKNEXTWEEK"
+  },
+  {
+   "code": "HAPPYHOLIDAYS"
+  },
+  {
+   "code": "FROZENLOKI"
+  },
+  {
+   "code": "SNOWLOCKDUO"
+  },
+  {
+   "code": "COOKIECODE"
+  },
+  {
+   "code": "GINGERBREADPASSER"
+  },
+  {
+   "code": "BAROUSNOWLOCK"
+  },
+  {
+   "code": "SNOWLOCK2"
+  },
+  {
+   "code": "FESTIVEGOAL"
+  },
+  {
+   "code": "WEEK2HYPE"
+  },
+  {
+   "code": "SNOWLOCK1"
+  },
+  {
+   "code": "HAPPYSNOWLOCK"
+  },
+  {
+   "code": "FIRSTGIFT"
+  },
+  {
+   "code": "SNOWFALLDELAY"
+  },
+  {
+   "code": "SORRYFORDELAY!!!!!"
+  },
+  {
+   "code": "BACHIRAEVOLUTION"
+  },
+  {
+   "code": "DELAYSORRY"
+  },
+  {
+   "code": "BIGGESTGROUP"
+  },
+  {
+   "code": "HOLIDAYHYPE"
+  },
+  {
+   "code": "CodeSnake"
+  },
+  {
+   "code": "SerpentSpins"
+  },
+  {
+   "code": "AikuBack"
+  },
+  {
+   "code": "THANKS4BVISITS"
+  },
+  {
+   "code": "HappyHalloween"
+  },
+  {
+   "code": "HalloweenFinale"
+  },
+  {
+   "code": "SkeletonNagiHype"
+  },
+  {
+   "code": "NAGIATEPUMPKINS"
+  },
+  {
+   "code": "BIGBEAUTIFULBALANCE"
+  },
+  {
+   "code": "BACHIRAHALLOWEEN"
+  },
+  {
+   "code": "REAPERCODE"
+  },
+  {
+   "code": "THESCYTHEDIDIT"
+  },
+  {
+   "code": "SHIDOUTOMORROW"
+  },
+  {
+   "code": "ZOMBIETIME"
+  },
+  {
+   "code": "YoMichael"
+  },
+  {
+   "code": "THEDON"
+  },
+  {
+   "code": "LASTWEEKSORRY"
+  },
+  {
+   "code": "PRODIGYBALANCE"
+  },
+  {
+   "code": "UPDATEHYPE3"
+  },
+  {
+   "code": "MiroMiroMiro"
+  },
+  {
+   "code": "BRAZILMAN"
+  },
+  {
+   "code": "DANCERHYPE"
+  },
+  {
+   "code": "BACHIRADAD"
+  },
+  {
+   "code": "OPUPDATE"
+  },
+  {
+   "code": "SORRYFORDELAY"
+  },
+  {
+   "code": "BUNNYPEAK"
+  },
+  {
+   "code": "LAVINHONEXTWEEK"
+  },
+  {
+   "code": "8V8HYPE"
+  },
+  {
+   "code": "WEWANTSPINS"
+  },
+  {
+   "code": "2MINTERESTED!"
+  },
+  {
+   "code": "CHARLESTIME"
+  },
+  {
+   "code": "TONGUESOUT"
+  },
+  {
+   "code": "1.5MGOALHIT"
+  },
+  {
+   "code": "CHEMREACTW"
+  },
+  {
+   "code": "WTEAMWORK"
+  },
+  {
+   "code": "MCNAGIHYPE"
+  },
+  {
+   "code": "OOPSDELAY"
+  },
+  {
+   "code": "SUMMERPT1!"
+  },
+  {
+   "code": "NELREO!"
+  },
+  {
+   "code": "MASTEROFALLTRADES!"
+  },
+  {
+   "code": "KINGOVERHAUL!"
+  },
+  {
+   "code": "KINGAUTHORITY!"
+  },
+  {
+   "code": "MASSIVEBUGFIXES!"
+  },
+  {
+   "code": "KINGAWAKENING!"
+  },
+  {
+   "code": "LUCKY7!"
+  },
+  {
+   "code": "CAREPACKAGE!"
+  },
+  {
+   "code": "THEGODSPRINTER!"
+  },
+  {
+   "code": "GODSPEED!"
+  },
+  {
+   "code": "MASTERS!"
+  },
+  {
+   "code": "JULIANLOKI!"
+  },
+  {
+   "code": "RANKED!"
+  },
+  {
+   "code": "LOKISOON!"
+  },
+  {
+   "code": "AIKUREWORK!"
+  },
+  {
+   "code": "SNAKEDEFENCE!"
+  },
+  {
+   "code": "AIKU1.15M!"
+  },
+  {
+   "code": "NELSUMMER!"
+  },
+  {
+   "code": "NEWCHEM1.1M!"
+  },
+  {
+   "code": "4HOURS!"
+  },
+  {
+   "code": "NeoEgoistRIN!"
+  },
+  {
+   "code": "TheDestroyer!"
+  },
+  {
+   "code": "Rin999K!"
+  },
+  {
+   "code": "1MILLIONCCU!!"
+  },
+  {
+   "code": "OTOYA!!"
+  },
+  {
+   "code": "CHEMREACTION!"
+  },
+  {
+   "code": "REVAMP!"
+  },
+  {
+   "code": "BACHIRA!!"
+  },
+  {
+   "code": "EASTER25!"
+  },
+  {
+   "code": "EGGHunt!!!"
+  },
+  {
+   "code": "Sry4Delay"
+  },
+  {
+   "code": "2BVISITS!"
+  },
+  {
+   "code": "THEMONK!"
+  },
+  {
+   "code": "IGAGOAT1.8M!"
+  },
+  {
+   "code": "KING1.5M"
+  },
+  {
+   "code": "KINGREWORK"
+  },
+  {
+   "code": "GOALRUSH"
+  },
+  {
+   "code": "KAISERFIX"
+  },
+  {
+   "code": "LUCKYCODE10"
+  },
+  {
+   "code": "MIRO1MCCU"
+  },
+  {
+   "code": "KAISER2M"
+  },
+  {
+   "code": "KAISERSOON"
+  },
+  {
+   "code": "FINE1M"
+  },
+  {
+   "code": "CHROLLO4AM"
+  },
+  {
+   "code": "CHROLLOCAREPACKAGE"
+  },
+  {
+   "code": "100KCHRO"
+  },
+  {
+   "code": "10KDEVS"
+  },
+  {
+   "code": "40KAGAIN"
+  },
+  {
+   "code": "THECODE"
+  },
+  {
+   "code": "40KKUNIGAMI"
+  },
+  {
+   "code": "KUNIGAMIUPD"
+  },
+  {
+   "code": "5KLIVE"
+  },
+  {
+   "code": "KUN1G@M1"
+  },
+  {
+   "code": "200KSUBS"
+  },
+  {
+   "code": "KARASU"
+  },
+  {
+   "code": "THX40KLIKES"
+  },
+  {
+   "code": "50KTATLIS"
+  },
+  {
+   "code": "THX30KLIKES"
+  },
+  {
+   "code": "DRAGON"
+  },
+  {
+   "code": "MONST3R"
+  },
+  {
+   "code": "60KFOLLOWERS"
+  },
+  {
+   "code": "30KLIKES"
+  },
+  {
+   "code": "THANKYOU"
+  },
+  {
+   "code": "25KTATLIS"
+  },
+  {
+   "code": "300KREO"
+  },
+  {
+   "code": "35KCHROLLO"
+  },
+  {
+   "code": "20KCHROLLO"
+  },
+  {
+   "code": "15KTATLIS"
+  },
+  {
+   "code": "MRSPAX"
+  },
+  {
+   "code": "CHRISTMAS"
+  },
+  {
+   "code": "5KTATLIS"
+  },
+  {
+   "code": "1KTATLIS"
+  },
+  {
+   "code": "WINTERPART2"
+  },
+  {
+   "code": "SORRYDELAY"
+  },
+  {
+   "code": "AIKU"
+  },
+  {
+   "code": "HOORAY"
+  },
+  {
+   "code": "1MLIKES"
+  },
+  {
+   "code": "900KLIKES"
+  },
+  {
+   "code": "800KLIKES"
+  },
+  {
+   "code": "700KLIKES"
+  },
+  {
+   "code": "600KCRAZY"
+  },
+  {
+   "code": "500KLIKES"
+  },
+  {
+   "code": "ITOSHIBROTHERS"
+  },
+  {
+   "code": "400KLIKES"
+  },
+  {
+   "code": "GAGAMARU"
+  },
+  {
+   "code": "300KLIKES"
+  },
+  {
+   "code": "200CRAZY"
+  },
+  {
+   "code": "150KWOW"
+  },
+  {
+   "code": "100KLIKES"
+  },
+  {
+   "code": "70KLIKES"
+  },
+  {
+   "code": "40KLIKES"
+  },
+  {
+   "code": "FORGIVEME"
+  },
+  {
+   "code": "YNWA"
+  },
+  {
+   "code": "1KLIKES"
+  },
+  {
+   "code": "Released"
+  },
+  {
+   "code": "THANKSGIVING"
+  }
+ ]
+}

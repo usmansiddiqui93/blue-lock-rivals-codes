@@ -1,0 +1,130 @@
+{
+ "verified": "2026-10-09",
+ "flows": [
+  {
+   "name": "Godspeed",
+   "rarity": "Master",
+   "effect": "Faster movement and stamina recovery, shorter skill cooldowns, less stamina drain"
+  },
+  {
+   "name": "Butterfly Dancer",
+   "rarity": "Master",
+   "effect": "Extra dribbles, shorter dribble cooldown, stronger ankle breaks, higher run speed"
+  },
+  {
+   "name": "Destructive Impulses",
+   "rarity": "World Class",
+   "effect": "More shot power and speed; normal shots curve"
+  },
+  {
+   "name": "Emperor",
+   "rarity": "World Class",
+   "effect": "More shot power and speed, shorter cooldowns"
+  },
+  {
+   "name": "Awakened Genius",
+   "rarity": "World Class",
+   "effect": "Extra dribbles and shot power; feeds Flow % to teammates"
+  },
+  {
+   "name": "Ace Eater",
+   "rarity": "World Class",
+   "effect": "Shorter base cooldowns, faster movement, an extra header and dribble"
+  },
+  {
+   "name": "Master of all Trades",
+   "rarity": "World Class",
+   "effect": "Faster Chameleon, better movement and passing, extra dribble, shorter tackle cooldown"
+  },
+  {
+   "name": "Singularity",
+   "rarity": "World Class",
+   "effect": "Longer ball control, extra dribble, stronger charged shots and volleys, faster NEL Nagi trap"
+  },
+  {
+   "name": "Demon King",
+   "rarity": "World Class",
+   "effect": "Stronger volleys and shots, slight speed boost, longer tackle reach"
+  },
+  {
+   "name": "King's Authority",
+   "rarity": "Mythic",
+   "effect": "Shorter tackle cooldown, less stamina loss, longer ankle-break stun, more shot power"
+  },
+  {
+   "name": "Snake",
+   "rarity": "Mythic",
+   "effect": "Extra headers with more power and speed, shorter tackle cooldown"
+  },
+  {
+   "name": "Bee Freestyle",
+   "rarity": "Mythic",
+   "effect": "Extra dribbles, shorter dribble cooldown, more speed, stronger ankle breaks"
+  },
+  {
+   "name": "Contrarian",
+   "rarity": "Mythic",
+   "effect": "Slight speed boost, high-pass tracking, Flow % for teammates, speeds up pass receivers"
+  },
+  {
+   "name": "Crow",
+   "rarity": "Legendary",
+   "effect": "Harder shots and quicker tackles"
+  },
+  {
+   "name": "Demon Wings",
+   "rarity": "Legendary",
+   "effect": "Faster shots, higher jumps, stronger headers"
+  },
+  {
+   "name": "Trap",
+   "rarity": "Legendary",
+   "effect": "Speed and shot power on receiving the ball; shorter Nagi move cooldowns"
+  },
+  {
+   "name": "Dribbler",
+   "rarity": "Legendary",
+   "effect": "Harder, faster shots while carrying; longer dribbles"
+  },
+  {
+   "name": "Wild Card",
+   "rarity": "Legendary",
+   "effect": "More shot power, shorter tackle cooldown, plus a stamina or speed boost"
+  },
+  {
+   "name": "Magician Flow",
+   "rarity": "Legendary",
+   "effect": "Slight speed boost, pass tracking, faster receivers, more shot power"
+  },
+  {
+   "name": "Genius",
+   "rarity": "Epic",
+   "effect": "Gives teammates Flow % when activated"
+  },
+  {
+   "name": "Monster",
+   "rarity": "Epic",
+   "effect": "Shorter dribble cooldown, no slowdown while carrying the ball"
+  },
+  {
+   "name": "Ice",
+   "rarity": "Epic",
+   "effect": "Stronger passes with slight tracking; buffs the receiver"
+  },
+  {
+   "name": "Stealth",
+   "rarity": "Epic",
+   "effect": "Better stamina regen, shooting speed, movement speed and shot power"
+  },
+  {
+   "name": "Lightning",
+   "rarity": "Rare",
+   "effect": "More shot power, stamina regen, shooting and movement speed"
+  },
+  {
+   "name": "Puzzle",
+   "rarity": "Rare",
+   "effect": "Faster movement"
+  }
+ ]
+}

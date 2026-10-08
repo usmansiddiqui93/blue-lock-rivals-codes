@@ -1,0 +1,38 @@
+{
+ "updates": [
+  {
+   "date": "2026-10-03",
+   "name": "Lorenzo Rework",
+   "codes": [
+    "DONREVAMP",
+    "SENDOUNEXT",
+    "ACEEATER"
+   ]
+  },
+  {
+   "date": "2026-09-26",
+   "name": "Snuffy Update",
+   "codes": [
+    "SNUFFYUPD",
+    "WSNUFFY"
+   ]
+  },
+  {
+   "date": "2026-09-19",
+   "name": "Quality of Life Update",
+   "codes": []
+  },
+  {
+   "date": "2026-09-12",
+   "name": "Niko Update",
+   "codes": [
+    "NIKOHERE"
+   ]
+  },
+  {
+   "date": "2026-09-05",
+   "name": "Barou Rework",
+   "codes": []
+  }
+ ]
+}

@@ -1,0 +1,85 @@
+{
+ "note": "Community-consensus ranking for the current meta. Edit freely — the page rebuilds automatically.",
+ "updated": "2026-10-09",
+ "styles": {
+  "S": [
+   "Don Lorenzo",
+   "Loki",
+   "Lavinho",
+   "Kaiser",
+   "NEL Isagi",
+   "NEL Rin",
+   "NEL Nagi"
+  ],
+  "A": [
+   "Sae",
+   "NEL Bachira",
+   "NEL Shidou",
+   "NEL Reo",
+   "NEL Chigiri",
+   "Kunigami",
+   "Shidou",
+   "Aiku"
+  ],
+  "B": [
+   "Yukimiya",
+   "Rin",
+   "Reo",
+   "Charles",
+   "King",
+   "Nagi",
+   "Kiyora"
+  ],
+  "C": [
+   "Bachira",
+   "Hiori",
+   "Ness",
+   "Karasu",
+   "Raichi",
+   "Otoya"
+  ],
+  "D": [
+   "Kurona",
+   "Isagi",
+   "Chigiri",
+   "Gagamaru"
+  ]
+ },
+ "flows": {
+  "S": [
+   "Godspeed",
+   "Butterfly Dancer",
+   "Emperor",
+   "Destructive Impulses"
+  ],
+  "A": [
+   "Awakened Genius",
+   "Ace Eater",
+   "Singularity",
+   "Demon King",
+   "Master of all Trades"
+  ],
+  "B": [
+   "King's Authority",
+   "Snake",
+   "Bee Freestyle",
+   "Contrarian",
+   "Wild Card",
+   "Dribbler"
+  ],
+  "C": [
+   "Crow",
+   "Demon Wings",
+   "Trap",
+   "Magician Flow",
+   "Stealth",
+   "Genius"
+  ],
+  "D": [
+   "Monster",
+   "Ice",
+   "Lightning",
+   "Puzzle"
+  ]
+ }
+}

@@ -1,0 +1,65 @@
+{
+ "verified": "2026-10-09",
+ "rarities": {
+  "Master": [
+   "Loki",
+   "Lavinho"
+  ],
+  "World Class": [
+   "NEL Rin",
+   "NEL Nagi",
+   "Sae",
+   "Kaiser",
+   "Don Lorenzo",
+   "NEL Isagi",
+   "NEL Bachira",
+   "NEL Chigiri",
+   "NEL Reo",
+   "NEL Shidou"
+  ],
+  "Mythic": [
+   "Shidou",
+   "Rin",
+   "Kunigami",
+   "Aiku",
+   "Yukimiya",
+   "Reo",
+   "Charles"
+  ],
+  "Legendary": [
+   "King",
+   "Nagi",
+   "Bachira",
+   "Kiyora",
+   "Hiori",
+   "Ness"
+  ],
+  "Epic": [
+   "Otoya",
+   "Karasu",
+   "Raichi",
+   "Kurona"
+  ],
+  "Rare": [
+   "Isagi",
+   "Chigiri",
+   "Gagamaru"
+  ],
+  "Limited": [
+   "Easter Kaiser",
+   "McNagi Fryshiro",
+   "Reaper Sae",
+   "Demon Shidou",
+   "Phantom Isagi",
+   "Bloodmoon Rin",
+   "Skeleton Nagi",
+   "Elf Emperor",
+   "Krampus Barou",
+   "Gingerbread Charles",
+   "Subzero Loki",
+   "Santa Lavinho",
+   "Firework Bachira",
+   "Easter Yukimiya"
+  ]
+ }
+}

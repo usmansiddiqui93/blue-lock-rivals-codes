@@ -1,0 +1,76 @@
+name: Update codes & deploy
+
+on:
+  schedule:
+    - cron: "7,37 * * * *"     # every 30 minutes
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "Bypass the safety rail (use only after checking the log)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: update-and-deploy
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.tracker.outputs.changed }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run tests
+        run: python tests/test_updater.py
+
+      - name: Check sources for new / expired codes
+        id: tracker
+        if: github.event_name != 'push'
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          python scripts/update_codes.py ${{ inputs.force && '--force' || '' }}
+
+      - name: Commit data changes
+        if: steps.tracker.outputs.changed == 'true' || steps.tracker.outputs.state_changed == 'true'
+        run: |
+          git config user.name  "blr-codes-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/
+          MSG="Update codes"
+          [ -n "${{ steps.tracker.outputs.added }}" ] && MSG="New code(s): ${{ steps.tracker.outputs.added }}"
+          git commit -m "$MSG" || exit 0
+          git push
+
+      - name: Build site
+        run: |
+          git pull --ff-only || true
+          export LAST_CHECKED="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          python scripts/build.py
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: update
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
