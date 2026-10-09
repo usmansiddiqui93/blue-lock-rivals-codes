@@ -856,7 +856,7 @@ def feed():
             f'<lastBuildDate>{format_datetime(NOW)}</lastBuildDate>{"".join(items)}</channel></rss>')
 
 
-FAVICON = ('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M6 0h26l-6 32H0z" fill="#1B4DFF"/>'
+FAVICON = ('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M6 0h26l-6 32H0z" fill="#D7263D"/>'
            '<circle cx="16" cy="16" r="8" fill="none" stroke="#fff" stroke-width="2.4"/><path d="M16 11.2l3.8 2.7-1.4 4.4h-4.8l-1.4-4.4z" fill="#fff"/></svg>')
 
 
@@ -870,7 +870,7 @@ def make_images():
     bold = FONTS / "BarlowCondensed-ExtraBoldItalic.ttf"
     semi = FONTS / "BarlowCondensed-Bold.ttf"
     F = lambda path, size: ImageFont.truetype(str(path), size)
-    ink, accent, muted, line = "#16202E", "#1D5BF0", "#667085", "#E4E8EF"
+    ink, accent, muted, line = "#2A0B12", "#D7263D", "#7A5A60", "#F0E2E4"
     W, H = 1200, 630
     im = Image.new("RGB", (W, H), "white")
     d = ImageDraw.Draw(im)
@@ -883,7 +883,7 @@ def make_images():
     d.text((80, 486), summary, font=F(semi, 44), fill=ink)
     im.save(DIST / "og.png", optimize=True)
 
-    icon = Image.new("RGB", (180, 180), "#1D5BF0")
+    icon = Image.new("RGB", (180, 180), "#D7263D")
     di = ImageDraw.Draw(icon)
     di.ellipse([42, 42, 138, 138], outline="white", width=10)
     di.polygon([(90, 64), (112, 80), (104, 106), (76, 106), (68, 80)], fill="white")

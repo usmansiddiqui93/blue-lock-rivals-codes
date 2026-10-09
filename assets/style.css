@@ -322,3 +322,31 @@ a:hover{color:var(--royal)}
 footer{background:var(--navy);color:#9FADD0}
 footer a{color:#E6ECFF}
 footer a:hover{color:#fff}
+
+/* ================= Red theme =================
+   Deep burgundy -> crimson -> coral, with soft rose tints.
+   Green stays reserved for "live" and "new". */
+:root{
+  --navy:#2A0B12;        /* deepest tone (burgundy-black) */
+  --royal:#D7263D;       /* main crimson */
+  --royal-deep:#A8182C;  /* links, text accents */
+  --sky:#FF6B6B;         /* light end of gradients */
+  --mist:#FDEEF0;
+  --mist-2:#F8D7DC;
+  --page:#FAF6F6;
+  --accent:#D7263D;
+  --accent-ink:#A8182C;
+  --accent-soft:#FDEEF0;
+}
+.intro-band{background:linear-gradient(120deg,var(--navy) 0%,#6E1220 55%,var(--royal) 100%)}
+.intro-band .lede{color:#FFDDE1}
+.intro-band .byline,.intro-band .crumbs{color:#F0B3BB}
+.block,.panel{border-color:#F0E2E4}
+#codes{box-shadow:0 10px 30px -14px rgba(215,38,61,.45),0 0 0 1px var(--mist-2)}
+.ticket:nth-child(even){background:#FFFBFB}
+.ticket-code{border-color:#F2A7B1}
+.t-S .tier-badge{background:#B3172C}.t-A .tier-badge{background:#D7263D}.t-B .tier-badge{background:#EE5A69}
+.t-C .tier-badge{background:#F6A3AC;color:var(--navy)}.t-D .tier-badge{background:#F9D3D7;color:var(--navy)}
+footer{background:var(--navy);color:#D7A9B0}
+footer a{color:#FFE8EB}
+:focus-visible{outline-color:var(--royal)}
