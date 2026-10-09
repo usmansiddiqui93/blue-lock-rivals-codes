@@ -247,3 +247,78 @@ footer a{color:#fff}
 .panel{padding-bottom:16px}
 .panel>:last-child,.panel p:last-child{margin-bottom:0}
 .panel.author-panel{padding:16px 0}
+
+/* ================= Unified colour scheme =================
+   One family of blues (navy -> royal -> sky) + a single green
+   accent reserved for "live" and "new". */
+:root{
+  --navy:#0B1736;
+  --royal:#2348E0;
+  --royal-deep:#1A37B8;
+  --sky:#5B8CFF;
+  --mist:#EEF2FE;
+  --mist-2:#DCE5FD;
+  --page:#F4F6FB;
+  --accent:#2348E0;
+  --accent-ink:#1A37B8;
+  --accent-soft:#EEF2FE;
+  --live:#16A34A;
+}
+body{background:var(--page)}
+a{color:var(--royal-deep)}
+a:hover{color:var(--royal)}
+
+/* header */
+.brand-mark{background:linear-gradient(135deg,var(--royal),var(--sky))}
+.nav a[aria-current=page]{color:var(--royal);box-shadow:inset 0 -2px 0 var(--royal);border-radius:0}
+
+/* title band: deep gradient, white text */
+.intro-band{background:linear-gradient(120deg,var(--navy) 0%,#142A6E 55%,var(--royal) 100%);border-bottom:0;color:#fff}
+.intro-band h1{color:#fff}
+.intro-band .lede{color:#D6E0FF}
+.intro-band .byline,.intro-band .crumbs{color:#A9B8E6}
+.intro-band .byline a,.intro-band .crumbs a{color:#fff;text-decoration-color:rgba(255,255,255,.4)}
+
+/* cards */
+.block{border-color:#E3E8F4;box-shadow:0 1px 2px rgba(11,23,54,.04)}
+.block>h2::before{background:linear-gradient(180deg,var(--royal),var(--sky))}
+#expired>h2::before,#all>h2::before,#faq>h2::before,#redeem>h2::before,#steps>h2::before{background:linear-gradient(180deg,var(--royal),var(--sky))}
+
+/* codes card */
+#codes{border:0;box-shadow:0 10px 30px -14px rgba(35,72,224,.45),0 0 0 1px var(--mist-2)}
+#codes>h2{background:linear-gradient(120deg,var(--navy) 0%,var(--royal) 100%)}
+#codes>h2::before{background:var(--sky)}
+.tickets{border-color:var(--mist-2)}
+.ticket{border-color:var(--mist-2)}
+.ticket:nth-child(even){background:#FBFCFF}
+.ticket-code{background:var(--mist);color:var(--royal-deep);border-color:#A9BEF7}
+.copy{background:var(--royal)}
+.copy:hover{background:var(--navy)}
+.copy.done{background:var(--live)}
+.tag-new{background:var(--live);color:#fff}
+.btn{border-color:var(--mist-2);color:var(--royal-deep)}
+.btn:hover{background:var(--mist);border-color:var(--royal)}
+
+/* steps, faq, expired in the same family */
+.steps li::before{background:var(--mist);color:var(--royal-deep)}
+.faq summary::after{color:var(--royal)}
+.expired-list li,.block .expired-list li{color:#8A93A8;text-decoration-color:#B9C0CE}
+
+/* sidebar: one look for every panel, blue header strip */
+.panel{border-color:#E3E8F4;border-top:0 !important;box-shadow:0 1px 2px rgba(11,23,54,.04)}
+.panel>h3,.panel.tracker>h3,.panel.tips-panel>h3,.panel.guides-panel>h3{background:var(--mist);color:var(--navy);border-bottom:1px solid var(--mist-2)}
+.panel.tracker>h3{background:linear-gradient(120deg,var(--navy),var(--royal));color:#fff;border-bottom:0}
+.live{background:#4ADE80;box-shadow:0 0 0 3px rgba(74,222,128,.25)}
+.tips li::marker{color:var(--royal)}
+.linklist a:hover{color:var(--royal)}
+.avatar{background:linear-gradient(135deg,var(--royal),var(--sky));color:#fff}
+.panel.author-panel{border-top:0}
+
+/* tier and rarity colours softened to sit with the blues */
+.t-S .tier-badge{background:#2348E0}.t-A .tier-badge{background:#4A6FF0}.t-B .tier-badge{background:#7E9BF5}
+.t-C .tier-badge{background:#A9BCF7;color:var(--navy)}.t-D .tier-badge{background:#D3DCF7;color:var(--navy)}
+
+/* footer */
+footer{background:var(--navy);color:#9FADD0}
+footer a{color:#E6ECFF}
+footer a:hover{color:#fff}
