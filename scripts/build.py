@@ -152,6 +152,12 @@ ICON = {
     "controls": '<path d="M7 9h10a4 4 0 0 1 4 4v1.5a2.5 2.5 0 0 1-4.6 1.3L15 14H9l-1.4 1.8A2.5 2.5 0 0 1 3 14.5V13a4 4 0 0 1 4-4z"/><path d="M8 11.5v2M7 12.5h2M16 12h.01M17.5 13.5h.01"/>',
     "help": '<circle cx="12" cy="12" r="8.5"/><path d="M9.6 9.5a2.5 2.5 0 1 1 3.4 2.3c-.6.3-1 .8-1 1.5V14M12 17h.01"/>',
     "guides": '<path d="M5 4.5h9a3 3 0 0 1 3 3V20H8a3 3 0 0 1-3-3z"/><path d="M17 7.5h2V20M8.5 9h5M8.5 12.5h5"/>',
+    "chat": '<path d="M5 5.5h14a1.5 1.5 0 0 1 1.5 1.5v8a1.5 1.5 0 0 1-1.5 1.5h-7l-4.5 3.5v-3.5H5A1.5 1.5 0 0 1 3.5 15V7A1.5 1.5 0 0 1 5 5.5z"/><path d="M8.5 11h.01M12 11h.01M15.5 11h.01"/>',
+    "bell": '<path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.5 1.5h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/>',
+    "play": '<rect x="3.5" y="3.5" width="17" height="17" rx="3"/><path d="m10 8.5 5.5 3.5-5.5 3.5z" fill="currentColor"/>',
+    "copy": '<rect x="8.5" y="8.5" width="11" height="11" rx="2"/><path d="M15.5 8.5V6a1.5 1.5 0 0 0-1.5-1.5H6A1.5 1.5 0 0 0 4.5 6v8A1.5 1.5 0 0 0 6 15.5h2.5"/>',
+    "plus": '<path d="M12 5v14M5 12h14"/>',
+    "chev": '<path d="m6 9 6 6 6-6"/>',
     "search": '<circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/>',
     "ball": '<circle cx="12" cy="12" r="9"/><path d="m12 7.5 3.8 2.7-1.4 4.5H9.6l-1.4-4.5z"/><path d="M12 3v4.5M21 10.5l-5.2-.3M17.5 19.5l-3.1-4.8M6.5 19.5l3.1-4.8M3 10.5l5.2-.3"/>',
 }
@@ -162,9 +168,9 @@ def icon(name, size=20, cls="ico"):
             f'stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">{ICON[name]}</svg>')
 
 
-NAV2 = [("codes", "Codes", "/", ""), ("tier", "Tier list", "/tier-list/", ""), ("styles", "Styles", "/styles/", ""),
-        ("flows", "Flows", "/flows/", ""), ("spins", "Free spins", "/free-spins/", ""),
-        ("update", "Next update", "/next-update/", "LIVE"), ("help", "Codes not working", "/codes-not-working/", "")]
+NAV2 = [("codes", "Codes", "/", "NEW"), ("tier", "Tier list", "/tier-list/", ""), ("styles", "Styles", "/styles/", ""),
+        ("flows", "Flows", "/flows/", ""), ("controls", "Controls", "/controls/", ""),
+        ("update", "Next update", "/next-update/", "HOT"), ("help", "Codes not working", "/codes-not-working/", "")]
 
 TILES = [("tier", "Tier list", "/tier-list/", "t1"), ("styles", "All styles", "/styles/", "t2"),
          ("flows", "All flows", "/flows/", "t3"), ("spins", "Free spins", "/free-spins/", "t4"),
@@ -175,6 +181,12 @@ TILES = [("tier", "Tier list", "/tier-list/", "t1"), ("styles", "All styles", "/
 def tiles():
     return ('<nav class="tiles wrap" aria-label="Popular guides">' + "".join(
         f'<a class="tile {c}" href="{u}">{icon(i, 26)}<span>{e(t)}</span></a>' for i, t, u, c in TILES) + "</nav>")
+
+
+def code_box(code, big=False):
+    return (f'<button class="codebox{" big" if big else ""}" type="button" data-copy="{e(code)}" aria-label="Copy code {e(code)}">'
+            f'<span class="cb-label">Code</span><span class="cb-code">{e(code)}</span>'
+            f'<span class="cb-copy">{icon("copy", 16)}<span class="cb-copy-txt">Copy</span></span></button>')
 
 
 def feature_cards():
@@ -193,8 +205,8 @@ def feature_cards():
         added = f'Added {e(nice_date(c["added"]))}' if c.get("added") else "Working now"
         cards.append(
             f'<li class="fcard v{i % 4}">{ribbon_html}<div class="fart" aria-hidden="true">{icon("ball", 150, "fball")}</div>'
-            f'<div class="fbody">{tag}<div class="fcode">{e(c["code"])}</div>'
-            f'<div class="fmeta">{added} · Roblox</div>{copy_button(c["code"], "Copy code")}</div></li>')
+            f'<div class="fbody">{tag}<div class="flabel">Redeem this code in Blue Lock: Rivals</div>{code_box(c["code"], True)}'
+            f'<div class="fmeta">{e(reward_text(c))} · {added}</div></div></li>')
     return '<ul class="fcards">' + "".join(cards) + "</ul>"
 
 
@@ -211,8 +223,7 @@ def tickets(codes):
     for c in codes:
         new_tag = '<span class="tag-new">New</span>' if is_new(c) else ""
         added = f' <span class="added">· added {e(nice_date(c["added"]))}</span>' if c.get("added") else ""
-        rows.append(f'<li class="ticket"><div><div class="ticket-code">{e(c["code"])}</div>'
-                    f'<div class="ticket-meta">{new_tag}{reward_chips(c)}{added}</div></div>{copy_button(c["code"])}</li>')
+        rows.append(f'<li class="ticket">{code_box(c["code"])}<div class="ticket-meta">{new_tag}{reward_chips(c)}{added}</div></li>')
     return '<ul class="tickets">' + "".join(rows) + "</ul>"
 
 
@@ -431,21 +442,34 @@ def head(page):
 
 
 def header(page):
+    any_new = any(is_new(c) for c in ACTIVE)
+    def badge(b):
+        if not b or (b == "NEW" and not any_new):
+            return ""
+        return f'<em class="badge b-{b.lower()}">{e(b)}</em>'
     nav = "".join(
-        f'<a href="{e(u)}"{" aria-current=page" if u == page["path"] else ""}>{icon(i, 19)}<span>{e(t)}</span>'
-        + (f'<em class="badge">{e(b)}</em>' if b else "") + "</a>" for i, t, u, b in NAV2)
-    index = "".join(f'<li><a href="{e(p["path"])}">{e(p["short"])}</a></li>' for p in PAGES if p["path"] not in ("/privacy-policy.html",))
-    index += "".join(f'<li><a href="/">Code: {e(c["code"])}</a></li>' for c in ACTIVE)
+        f'<a href="{e(u)}"{" aria-current=page" if u == page["path"] else ""}>{icon(i, 22)}<span>{e(t)}</span>{badge(b)}</a>'
+        for i, t, u, b in NAV2)
+    cta = f'<a class="cta" href="/free-spins/">{icon("plus", 20)}<span>Get free spins</span></a>'
+    index = "".join(f'<li data-cat="guides"><a href="{e(p["path"])}">{e(p["short"])}</a></li>'
+                    for p in PAGES if p["path"] not in ("/privacy-policy.html",))
+    index += "".join(f'<li data-cat="codes"><a href="/">Code: {e(c["code"])} ({e(reward_text(c))})</a></li>' for c in ACTIVE)
     return f"""<a class="skip" href="#main">Skip to content</a>
 <header class="top"><div class="wrap topbar">
-<a class="brand" href="/">{BRAND_MARK}<span>Blue Lock Rivals <b>Codes</b></span></a>
+<a class="logo" href="/" aria-label="{e(SITE['name'])} home"><span class="logo-word">BLR</span><span class="logo-tag">codes</span></a>
 <div class="search" role="search"><label class="sr" for="q">Search the site</label>
-<input id="q" type="search" placeholder="Search codes and guides" autocomplete="off">
-<span class="search-btn" aria-hidden="true">{icon("search", 20)}</span>
+<input id="q" type="search" placeholder="What are you looking for?" autocomplete="off">
+<label class="sr" for="qcat">Search in</label>
+<div class="search-cat"><select id="qcat"><option value="">All</option><option value="codes">Codes</option><option value="guides">Guides</option></select>{icon("chev", 16)}</div>
+<button class="search-btn" type="button" aria-label="Search">{icon("search", 22)}</button>
 <ul class="search-results" hidden>{index}</ul></div>
-<a class="pill" href="/guides/">{icon("guides", 18)}<span>All guides</span></a>
+<div class="actions-top">
+<a class="round" href="{e(SITE['discord_url'])}" target="_blank" rel="noopener" title="Official Discord">{icon("chat", 22)}<span class="sr">Official Discord</span></a>
+<a class="round" href="/feed.xml" title="New code alerts (RSS)">{icon("bell", 22)}<span class="sr">New code alerts</span></a>
+<a class="play" href="{e(SITE['roblox_url'])}" target="_blank" rel="noopener"><span class="round">{icon("play", 22)}</span><span class="play-txt"><b>Play</b><b>on Roblox</b></span></a>
+</div>
 <button class="menu-btn" type="button" aria-expanded="false" aria-controls="nav">Menu</button></div>
-<nav class="nav wrap" id="nav" aria-label="Main">{nav}</nav></header>"""
+<div class="navrow"><nav class="nav wrap" id="nav" aria-label="Main">{nav}{cta}</nav></div></header>"""
 
 
 def footer():

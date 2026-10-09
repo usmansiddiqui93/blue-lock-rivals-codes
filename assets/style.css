@@ -298,3 +298,95 @@ footer p{margin:0}
   .brand-mark{width:32px;height:32px}
   .menu-btn{padding:0 13px}
 }
+
+/* ================= Header v2: wordmark + store-style nav ================= */
+.top{background:#000}
+.topbar{height:84px;gap:22px}
+.logo{display:flex;align-items:flex-end;gap:2px;text-decoration:none;line-height:1;flex:none}
+.logo-word{font:900 italic 42px/0.9 var(--body);letter-spacing:-.04em;
+  background:linear-gradient(100deg,#FF8A1A 0%,#FF5A1F 45%,#E8263F 100%);-webkit-background-clip:text;background-clip:text;color:transparent;
+  padding-right:4px}
+.logo-tag{font:800 13px/1 var(--body);letter-spacing:.08em;text-transform:uppercase;color:#fff;background:var(--blue);
+  padding:3px 6px 3px;border-radius:5px;margin-bottom:3px;transform:skewX(-8deg)}
+.logo:hover .logo-tag{background:var(--blue-2)}
+
+.search{display:flex;align-items:stretch;max-width:none;height:52px;background:#fff;border-radius:999px;overflow:visible}
+.search input{flex:1;min-width:0;height:52px;border-radius:999px 0 0 999px;padding:0 20px 0 24px;font-size:16.5px;background:transparent}
+.search-cat{position:relative;display:flex;align-items:center;border-left:1px solid #E1E3EA;color:#3C4050}
+.search-cat select{appearance:none;-webkit-appearance:none;border:0;background:transparent;height:100%;padding:0 38px 0 18px;font:500 16px var(--body);color:#3C4050;cursor:pointer}
+.search-cat svg{position:absolute;right:14px;pointer-events:none}
+.search-btn{position:static;flex:none;width:68px;height:52px;border:0;border-radius:0 999px 999px 0;background:var(--blue);color:#fff;display:grid;place-items:center;cursor:pointer;pointer-events:auto}
+.search-btn:hover{background:var(--blue-2)}
+.search-results{top:58px}
+
+.actions-top{display:flex;align-items:center;gap:10px;flex:none}
+.round{display:grid;place-items:center;width:52px;height:52px;border-radius:50%;background:#1C1C24;color:#fff;text-decoration:none}
+a.round:hover,.play:hover .round{background:#2A2A36;color:#fff}
+.play{display:flex;align-items:center;gap:10px;color:#fff;text-decoration:none}
+.play-txt{display:flex;flex-direction:column;font-size:14.5px;line-height:1.35}
+.play-txt b{font-weight:800}
+.play:hover{color:#fff}
+
+.navrow{background:#000;border-top:1px solid #15151C}
+.nav{height:62px;gap:4px}
+.nav a{font-size:16.5px;font-weight:800;padding:9px 12px;gap:9px;color:#F2F2F6}
+.nav a .ico{opacity:1}
+.nav a[aria-current=page]{background:transparent;box-shadow:inset 0 -3px 0 var(--orange);border-radius:0}
+.nav a:hover{background:#15151C}
+.badge{font-size:12px;padding:3px 9px;border-radius:999px;font-weight:900}
+.b-new{background:#169A55;color:#fff}
+.b-hot{background:#E8263F;color:#fff}
+.cta{margin-left:auto;display:inline-flex;align-items:center;gap:9px;height:44px;padding:0 20px;border-radius:999px;color:#fff;text-decoration:none;font-weight:800;font-size:16.5px;white-space:nowrap;
+  background:linear-gradient(100deg,#5B3BE0 0%,#7A3CF0 100%);box-shadow:inset 0 0 0 2px rgba(255,255,255,.18),0 6px 18px -8px rgba(122,60,240,.8)}
+.cta:hover{filter:brightness(1.1);color:#fff}
+
+@media (max-width:1180px){.play-txt{display:none}.cta span{display:none}.cta{padding:0 12px}}
+@media (max-width:900px){
+  .topbar{height:66px}
+  .logo-word{font-size:34px}
+  .actions-top{display:none}
+  .navrow{border-top:0}
+  .nav{height:auto}
+  .cta{margin:6px 0 0;justify-content:center}
+  .cta span{display:inline}
+}
+@media (max-width:420px){.logo-word{font-size:30px}.logo-tag{font-size:11.5px}}
+
+/* ================= Coupon-style code boxes ================= */
+.codebox{all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;width:100%;min-height:54px;
+  background:#fff;border:2px dashed #FF7A1A;border-radius:12px;padding:6px 6px 6px 0;color:var(--ink);transition:border-color .15s,box-shadow .15s}
+.codebox:hover{border-color:#E8263F;box-shadow:0 0 0 4px rgba(255,122,26,.18)}
+.codebox:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.cb-label{flex:none;align-self:stretch;display:grid;place-items:center;padding:0 12px;margin-right:12px;border-right:2px dashed #FFD2B5;
+  font:800 11px/1 var(--body);letter-spacing:.12em;text-transform:uppercase;color:#B4501A}
+.cb-code{flex:1;min-width:0;font:800 20px/1.2 var(--mono);letter-spacing:.06em;color:var(--ink);word-break:break-all}
+.cb-copy{flex:none;display:inline-flex;align-items:center;gap:6px;height:40px;padding:0 14px;border-radius:9px;background:var(--hot);color:#fff;font:800 14.5px var(--body)}
+.codebox.done{border-color:var(--green);border-style:solid}
+.codebox.done .cb-copy{background:var(--green)}
+.codebox.big{min-height:62px}
+.codebox.big .cb-code{font-size:22px}
+@media (prefers-reduced-motion:reduce){.codebox{transition:none}}
+
+/* inside feature cards */
+.flabel{font-size:13.5px;font-weight:700;color:#D6D8E2;margin:2px 0 8px}
+.fcard .fmeta{margin:10px 0 0}
+.fcard .codebox{box-shadow:0 10px 24px -12px rgba(0,0,0,.8)}
+
+/* body list rows */
+.ticket{display:block;padding:14px 16px}
+.ticket-meta{margin-top:8px}
+@media (max-width:420px){.cb-code{font-size:17px}.codebox.big .cb-code{font-size:18px}.cb-copy-txt{display:none}.cb-copy{padding:0 11px}}
+
+/* ================= Header fixes on phones ================= */
+@media (max-width:900px){
+  .search{display:none}
+  .topbar{justify-content:space-between}
+  .menu-btn{display:block;margin-left:auto}
+}
+
+/* feature card sizing: fill the row, keep codes on one line */
+.fcards{grid-template-columns:repeat(auto-fit,minmax(310px,1fr))}
+.fcard{min-height:0;justify-content:flex-start;padding-top:74px}
+.fcard .fbody{background:none;padding:0 18px 18px}
+.cb-code{word-break:normal;overflow-wrap:anywhere}
+@media (min-width:1001px){.fcards li:only-child{max-width:520px}}

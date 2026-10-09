@@ -25,7 +25,11 @@
     var b = e.target.closest("[data-copy]");
     if (b) {
       copy(b.getAttribute("data-copy")).then(function () {
-        if (b.classList.contains("copy")) {
+        var lbl = b.querySelector(".cb-copy-txt");
+        if (lbl) {
+          lbl.textContent = "Copied"; b.classList.add("done");
+          setTimeout(function () { lbl.textContent = "Copy"; b.classList.remove("done"); }, 1400);
+        } else if (b.classList.contains("copy")) {
           var old = b.textContent; b.textContent = "Copied"; b.classList.add("done");
           setTimeout(function () { b.textContent = old; b.classList.remove("done"); }, 1400);
         }
@@ -104,19 +108,28 @@
     var mark = function () {
       visible().forEach(function (li, i) { li.firstChild.classList.toggle("active", i === idx); });
     };
+    var cat = document.getElementById("qcat");
+    var btn = q.parentNode.querySelector(".search-btn");
     var run = function () {
       var term = q.value.trim().toLowerCase();
+      var want = cat ? cat.value : "";
       idx = -1;
-      if (!term) { box.hidden = true; return; }
+      if (!term && !want) { box.hidden = true; return; }
       var hits = 0;
       items.forEach(function (li) {
-        var ok = li.textContent.toLowerCase().indexOf(term) !== -1 && hits < 8;
+        var inCat = !want || li.getAttribute("data-cat") === want;
+        var ok = inCat && li.textContent.toLowerCase().indexOf(term) !== -1 && hits < 8;
         li.classList.toggle("show", ok); if (ok) hits++;
       });
       if (!hits) { box.appendChild(none); } else if (none.parentNode) { none.parentNode.removeChild(none); }
       box.hidden = false; mark();
     };
     q.addEventListener("input", run);
+    if (cat) cat.addEventListener("change", function () { run(); q.focus(); });
+    if (btn) btn.addEventListener("click", function () {
+      var t = visible()[0];
+      if (t && q.value.trim()) location.href = t.firstChild.href; else { run(); q.focus(); }
+    });
     q.addEventListener("focus", run);
     q.addEventListener("keydown", function (ev) {
       var vis = visible();
