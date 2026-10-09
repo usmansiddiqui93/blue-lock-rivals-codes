@@ -49,6 +49,6 @@
   "author_url": "/author/muhammad-usman-siddiqui/",
   "author_profiles": [],
   "_author_profiles_help": "Add your public profiles as [\"Label\", \"https://...\"] pairs, e.g. [\"X (Twitter)\", \"https://x.com/you\"]. They appear on your profile page and in Google's author data.",
-  "alerts_endpoint": "",
+  "alerts_endpoint": "https://qgqtfdvdbxydicstruur.supabase.co/functions/v1/alerts",
   "_alerts_help": "URL of the Supabase 'alerts' Edge Function, e.g. https://<project>.supabase.co/functions/v1/alerts. Empty = form shows a 'coming soon' note."
 }
