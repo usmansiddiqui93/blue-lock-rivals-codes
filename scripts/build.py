@@ -51,7 +51,8 @@ PREVIEW = bool(BASE)
 def with_base(markup: str) -> str:
     if not BASE:
         return markup
-    return re.sub(r'((?:href|src)=")/(?!/)', rf"\1{BASE}/", markup)
+    markup = re.sub(r'((?:href|src)=")/(?!/)', rf"\1{BASE}/", markup)
+    return re.sub(r'srcset="([^"]*)"', lambda m: 'srcset="' + re.sub(r'(^|,\s*)/(?!/)', rf"\1{BASE}/", m.group(1)) + '"', markup)
 
 
 def parse_dt(s):
@@ -272,8 +273,8 @@ def related(page):
 def sidebar(page):
     a = SITE["author"]
     initials = "".join(w[0] for w in a.split()[:2]).upper()
-    avatar = ('<img src="/assets/author-96.jpg" srcset="/assets/author-96.jpg 1x, /assets/author.jpg 4x" '
-              f'width="48" height="48" alt="{e(a)}">') if (ASSETS / "author.jpg").exists() else e(initials)
+    avatar = ('<img src="/assets/author.jpg" width="48" height="48" alt="" loading="lazy">'
+              if (ASSETS / "author.jpg").exists() else e(initials))
     guides = "".join(f'<li><a href="{e(p["path"])}">{e(p["short"])}</a></li>'
                      for p in PAGES if p.get("blurb") and p["path"] != page["path"])
     return f"""<aside>
