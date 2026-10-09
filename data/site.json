@@ -45,5 +45,8 @@
   "tagline": "Every working Blue Lock: Rivals code, checked every 30 minutes",
   "published": "2024-11-20",
   "update_weekday": 5,
-  "update_hour_pt": 10
+  "update_hour_pt": 10,
+  "author_url": "/author/muhammad-usman-siddiqui/",
+  "author_profiles": [],
+  "_author_profiles_help": "Add your public profiles as [\"Label\", \"https://...\"] pairs, e.g. [\"X (Twitter)\", \"https://x.com/you\"]. They appear on your profile page and in Google's author data."
 }

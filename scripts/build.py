@@ -272,7 +272,8 @@ def related(page):
 def sidebar(page):
     a = SITE["author"]
     initials = "".join(w[0] for w in a.split()[:2]).upper()
-    avatar = '<img src="/author.png" alt="">' if (ASSETS / "author.png").exists() else e(initials)
+    avatar = ('<img src="/assets/author-96.jpg" srcset="/assets/author-96.jpg 1x, /assets/author.jpg 4x" '
+              f'width="48" height="48" alt="{e(a)}">') if (ASSETS / "author.jpg").exists() else e(initials)
     guides = "".join(f'<li><a href="{e(p["path"])}">{e(p["short"])}</a></li>'
                      for p in PAGES if p.get("blurb") and p["path"] != page["path"])
     return f"""<aside>
@@ -288,8 +289,8 @@ def sidebar(page):
 <li><strong>Check on Saturdays.</strong> Most updates and codes land then.</li></ul></div>
 <div class="panel guides-panel"><h3>Guides</h3><ul class="linklist">{guides}</ul></div>
 <div class="panel author-panel"><div class="author"><div class="avatar">{avatar}</div><div>
-<strong>{e(a)}</strong><span class="muted role">{e(SITE['author_role'])}</span></div></div>
-<p class="status" style="margin-top:12px">New codes are published only after two independent sources confirm them. <a href="/about/">How we check codes</a></p></div>
+<strong><a href="{e(SITE['author_url'])}">{e(a)}</a></strong><span class="muted role">{e(SITE['author_role'])}</span></div></div>
+<p class="status" style="margin-top:12px">New codes are published only after two independent sources confirm them. <a href="{e(SITE['author_url'])}">About the author</a></p></div>
 </aside>"""
 
 
@@ -301,7 +302,9 @@ def json_ld(page):
          "email": SITE["contact_email"]},
         {"@type": "WebSite", "@id": ABS + "/#website", "url": ABS + "/", "name": SITE["name"],
          "description": SITE.get("tagline", ""), "publisher": {"@id": ABS + "/#org"}, "inLanguage": "en"},
-        {"@type": "Person", "@id": ABS + "/#author", "name": SITE["author"], "url": ABS + "/about/"},
+        {"@type": "Person", "@id": ABS + "/#author", "name": SITE["author"], "url": ABS + SITE["author_url"],
+         "image": ABS + "/assets/author.jpg", "jobTitle": SITE["author_role"],
+         "worksFor": {"@id": ABS + "/#org"}, **({"sameAs": [u for _, u in SITE["author_profiles"]]} if SITE.get("author_profiles") else {})},
         {"@type": page.get("schema_type", "Article"), "@id": url + "#article", "headline": page["title"],
          "description": page["description"], "url": url, "inLanguage": "en",
          "image": ABS + "/og.png", "datePublished": SITE.get("published", "2024-11-20"),
@@ -309,6 +312,8 @@ def json_ld(page):
          "author": {"@id": ABS + "/#author"}, "publisher": {"@id": ABS + "/#org"},
          "isPartOf": {"@id": ABS + "/#website"}, "mainEntityOfPage": url},
     ]
+    if page.get("schema_type") == "ProfilePage":
+        graph[-1]["mainEntity"] = {"@id": ABS + "/#author"}
     if page["path"] != "/":
         graph.append({"@type": "BreadcrumbList", "itemListElement": [
             {"@type": "ListItem", "position": 1, "name": "Blue Lock Rivals Codes", "item": ABS + "/"},
@@ -390,7 +395,7 @@ def byline(page):
     if page["path"] == "/":
         checked = f' · Codes checked <time data-rel datetime="{e(CHECKED)}">{e(nice_date(CHECKED))}</time>'
     return (f'<p class="byline">Updated <time datetime="{e(mod.isoformat())}">{e(nice_date(mod))}</time> by '
-            f'<a href="/about/">{e(SITE["author"])}</a>{checked}</p>')
+            f'<a href="{e(SITE["author_url"])}" rel="author">{e(SITE["author"])}</a>{checked}</p>')
 
 
 def hero(page):
@@ -713,9 +718,26 @@ def guides_body():
     return block("all", "All Blue Lock Rivals guides", guide_cards("/guides/"))
 
 
+def author_body():
+    guides = [p for p in PAGES if p.get("blurb")]
+    links = "".join(f'<li><a href="{e(u)}" rel="me noopener" target="_blank">{e(n)}</a></li>'
+                    for n, u in SITE.get("author_profiles", []))
+    return (block("profile", "About Muhammad Usman Siddiqui",
+                  f'''<div class="profile"><img class="profile-photo" src="/assets/author-portrait.jpg" width="240" height="300"
+alt="Photo of {e(SITE["author"])}" loading="eager"><div class="prose">
+<p><strong>{e(SITE["author"])}</strong> is a Blue Lock: Rivals player and the person behind {e(SITE["name"])}. He started the site so players could find every working code in one place, without digging through Discord threads and outdated lists.</p>
+<p>He maintains the automated code tracker, which checks for new codes every 30 minutes and publishes one only after two independent sources confirm it. He also writes and updates the guides on styles, flows, the tier list and controls after each weekly update.</p>
+<p>Spotted a wrong code or an outdated guide? Email <a href="mailto:{e(SITE["contact_email"])}">{e(SITE["contact_email"])}</a>.</p>
+{"<h3>Find him online</h3><ul>" + links + "</ul>" if links else ""}
+</div></div>''')
+            + block("written", "Guides by Muhammad Usman Siddiqui",
+                    '<ul class="links">' + "".join(
+                        f'<li><a href="{e(p["path"])}">{e(p["short"])}</a><span>{e(p["blurb"])}</span></li>' for p in guides) + "</ul>"))
+
+
 def about_body():
     return block("about", "About this site",
-                 f'<div class="prose"><p>{e(SITE["name"])} exists so you never miss a free code for Blue Lock: Rivals. It is run by {e(SITE["author"])}, a long-time player.</p>'
+                 f'<div class="prose"><p>{e(SITE["name"])} exists so you never miss a free code for Blue Lock: Rivals. It is run by <a href="{e(SITE["author_url"])}">{e(SITE["author"])}</a>, a long-time player.</p>'
                  '<h3>How codes are checked</h3><p>An automated tracker checks the developer\'s channels and several established code trackers every 30 minutes. A new code is published only when <strong>at least two independent sources</strong> list it as working. When sources report a code as dead, or it disappears everywhere, it moves to the expired list automatically.</p>'
                  f'<p>Spotted a mistake? Email <a href="mailto:{e(SITE["contact_email"])}">{e(SITE["contact_email"])}</a> and it will be fixed.</p>'
                  f'<h3>Independence</h3><p>This is an unofficial fan site. It is not affiliated with Roblox Corporation, {e(SITE["developer"])}, Kodansha or the creators of Blue Lock.</p></div>')
@@ -818,6 +840,11 @@ PAGES = [
          h1="Blue Lock Rivals guides", lede="Everything beyond codes: styles, flows, controls and more.",
          description="All Blue Lock Rivals guides: styles, flows, tier list, controls, free spins, next update and beginner tips.",
          body=guides_body),
+    dict(path="/author/muhammad-usman-siddiqui/", out="author/muhammad-usman-siddiqui/index.html",
+         short="Muhammad Usman Siddiqui", title="Muhammad Usman Siddiqui – Author Profile",
+         h1="Muhammad Usman Siddiqui", lede="Blue Lock: Rivals player and maintainer of Blue Lock Rivals Codes.",
+         description="Muhammad Usman Siddiqui runs Blue Lock Rivals Codes, tracking every new code and writing the site's style, flow and tier list guides.",
+         body=author_body, schema_type="ProfilePage"),
     dict(path="/about/", out="about/index.html", short="About", title=f"About {SITE['name']}",
          h1="About this site", lede="Who runs it and how codes are checked.",
          description="Who runs Blue Lock Rivals Codes and how new codes are found and verified.", body=about_body,
@@ -828,7 +855,7 @@ PAGES = [
 ]
 
 for p in PAGES:
-    if p["path"] not in ("/", "/about/", "/privacy-policy.html", "/guides/") and "related" not in p:
+    if p["path"] not in ("/", "/about/", "/privacy-policy.html", "/guides/", "/author/muhammad-usman-siddiqui/") and "related" not in p:
         p["related"] = CORE[:3]
 
 
@@ -906,7 +933,7 @@ def build():
     (DIST / "assets").mkdir(parents=True)
     for f in ASSETS.iterdir():
         if f.is_file():
-            target = DIST / ("author.png" if f.name == "author.png" else f"assets/{f.name}")
+            target = DIST / f"assets/{f.name}"
             shutil.copy2(f, target)
     for p in PAGES:
         out = DIST / p["out"]
