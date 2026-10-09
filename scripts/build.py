@@ -104,8 +104,13 @@ PITCH_SVG = """<svg class="pitch" viewBox="0 0 1200 460" preserveAspectRatio="xM
 <rect x="1000" y="120" width="170" height="220"/><rect x="1110" y="175" width="60" height="110"/>
 <path d="M1000 182a52 52 0 0 0 0 96"/></g><circle cx="600" cy="230" r="5" fill="#C4D2EC"/></svg>"""
 
-BRAND_MARK = ('<span class="brand-mark" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" '
+BRAND_MARK_OLD = ('<span class="brand-mark" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" '
               'stroke="#fff" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><path d="M12 7.2l4.2 3-1.6 4.8H9.4L7.8 10.2z" '
+              'fill="#fff" stroke="none"/></svg></span>')
+
+
+BRAND_MARK = ('<span class="brand-mark" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" '
+              'stroke="#fff" stroke-width="2.2"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.6l4 2.9-1.5 4.6h-5L8 10.5z" '
               'fill="#fff" stroke="none"/></svg></span>')
 
 
@@ -136,6 +141,61 @@ def is_new(c):
     except ValueError:
         return False
     return (NOW.date() - added).days <= int(SITE.get("new_code_days", 3))
+
+ICON = {
+    "codes": '<path d="M4 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4z"/><path d="M14 5v12" stroke-dasharray="2 2"/>',
+    "tier": '<path d="M8 4h8v3a4 4 0 0 1-8 0z"/><path d="M8 5H5v1a3 3 0 0 0 3 3M16 5h3v1a3 3 0 0 1-3 3M12 11v4M8.5 19h7M10 15h4l.5 4h-5z"/>',
+    "styles": '<circle cx="12" cy="7.5" r="3.5"/><path d="M5 20c.6-4 3.4-6 7-6s6.4 2 7 6"/>',
+    "flows": '<path d="M3 9c3-3 6 3 9 0s6-3 9 0M3 15c3-3 6 3 9 0s6-3 9 0"/>',
+    "spins": '<circle cx="12" cy="12" r="8"/><path d="M12 4v8l5 3"/><path d="M12 12 7 15"/>',
+    "update": '<circle cx="12" cy="13" r="7.5"/><path d="M12 9v4l2.5 2M9.5 3h5"/>',
+    "controls": '<path d="M7 9h10a4 4 0 0 1 4 4v1.5a2.5 2.5 0 0 1-4.6 1.3L15 14H9l-1.4 1.8A2.5 2.5 0 0 1 3 14.5V13a4 4 0 0 1 4-4z"/><path d="M8 11.5v2M7 12.5h2M16 12h.01M17.5 13.5h.01"/>',
+    "help": '<circle cx="12" cy="12" r="8.5"/><path d="M9.6 9.5a2.5 2.5 0 1 1 3.4 2.3c-.6.3-1 .8-1 1.5V14M12 17h.01"/>',
+    "guides": '<path d="M5 4.5h9a3 3 0 0 1 3 3V20H8a3 3 0 0 1-3-3z"/><path d="M17 7.5h2V20M8.5 9h5M8.5 12.5h5"/>',
+    "search": '<circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/>',
+    "ball": '<circle cx="12" cy="12" r="9"/><path d="m12 7.5 3.8 2.7-1.4 4.5H9.6l-1.4-4.5z"/><path d="M12 3v4.5M21 10.5l-5.2-.3M17.5 19.5l-3.1-4.8M6.5 19.5l3.1-4.8M3 10.5l5.2-.3"/>',
+}
+
+
+def icon(name, size=20, cls="ico"):
+    return (f'<svg class="{cls}" width="{size}" height="{size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" '
+            f'stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">{ICON[name]}</svg>')
+
+
+NAV2 = [("codes", "Codes", "/", ""), ("tier", "Tier list", "/tier-list/", ""), ("styles", "Styles", "/styles/", ""),
+        ("flows", "Flows", "/flows/", ""), ("spins", "Free spins", "/free-spins/", ""),
+        ("update", "Next update", "/next-update/", "LIVE"), ("help", "Codes not working", "/codes-not-working/", "")]
+
+TILES = [("tier", "Tier list", "/tier-list/", "t1"), ("styles", "All styles", "/styles/", "t2"),
+         ("flows", "All flows", "/flows/", "t3"), ("spins", "Free spins", "/free-spins/", "t4"),
+         ("update", "Next update", "/next-update/", "t5"), ("controls", "Controls", "/controls/", "t6"),
+         ("help", "Code not working?", "/codes-not-working/", "t7")]
+
+
+def tiles():
+    return ('<nav class="tiles wrap" aria-label="Popular guides">' + "".join(
+        f'<a class="tile {c}" href="{u}">{icon(i, 26)}<span>{e(t)}</span></a>' for i, t, u, c in TILES) + "</nav>")
+
+
+def feature_cards():
+    if not ACTIVE:
+        return ('<div class="feature-empty">No working codes right now. New codes usually arrive with the Saturday update. '
+                '<a href="/next-update/">See the countdown</a>.</div>')
+    cards = []
+    for i, c in enumerate(ACTIVE):
+        tag = '<span class="tag tag-new">NEW</span>' if is_new(c) else '<span class="tag tag-live">WORKING</span>'
+        ribbon = []
+        if c.get("spins"):
+            ribbon.append(f'<b>+{int(c["spins"])}</b> style spins')
+        if c.get("flows"):
+            ribbon.append(f'<b>+{int(c["flows"])}</b> flow spins')
+        ribbon_html = f'<div class="ribbon">{" · ".join(ribbon) or e(c.get("reward",""))}</div>'
+        added = f'Added {e(nice_date(c["added"]))}' if c.get("added") else "Working now"
+        cards.append(
+            f'<li class="fcard v{i % 4}">{ribbon_html}<div class="fart" aria-hidden="true">{icon("ball", 150, "fball")}</div>'
+            f'<div class="fbody">{tag}<div class="fcode">{e(c["code"])}</div>'
+            f'<div class="fmeta">{added} · Roblox</div>{copy_button(c["code"], "Copy code")}</div></li>')
+    return '<ul class="fcards">' + "".join(cards) + "</ul>"
 
 
 def copy_button(code, label="Copy"):
@@ -349,7 +409,7 @@ def head(page):
 <meta name="description" content="{e(desc)}">
 <meta name="robots" content="{robots}">
 <link rel="canonical" href="{e(url)}">
-<meta name="theme-color" content="#FFFFFF">
+<meta name="theme-color" content="#0B0B10">
 <meta name="google-adsense-account" content="{e(SITE['adsense_client'])}">
 <meta name="author" content="{e(SITE['author'])}">
 <meta property="og:type" content="article"><meta property="og:site_name" content="{e(SITE['name'])}">
@@ -364,20 +424,28 @@ def head(page):
 <link rel="manifest" href="/site.webmanifest">
 <link rel="alternate" type="application/rss+xml" title="New Blue Lock Rivals codes" href="/feed.xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@600;700&display=swap">
 <link rel="stylesheet" href="/assets/style.css?v={int(NOW.timestamp())}">
 <script type="application/ld+json">{json_ld(page)}</script>
 {adsense}</head>"""
 
 
 def header(page):
-    links = "".join(f'<a href="{e(href)}"{" aria-current=page" if href == page["path"] else ""}>{e(label)}</a>'
-                    for label, href in SITE["nav"])
+    nav = "".join(
+        f'<a href="{e(u)}"{" aria-current=page" if u == page["path"] else ""}>{icon(i, 19)}<span>{e(t)}</span>'
+        + (f'<em class="badge">{e(b)}</em>' if b else "") + "</a>" for i, t, u, b in NAV2)
+    index = "".join(f'<li><a href="{e(p["path"])}">{e(p["short"])}</a></li>' for p in PAGES if p["path"] not in ("/privacy-policy.html",))
+    index += "".join(f'<li><a href="/">Code: {e(c["code"])}</a></li>' for c in ACTIVE)
     return f"""<a class="skip" href="#main">Skip to content</a>
-<header class="top"><div class="wrap">
-<a class="brand" href="/">{BRAND_MARK}Blue Lock Rivals Codes</a>
-<button class="menu-btn" type="button" aria-expanded="false" aria-controls="nav">Menu</button>
-<nav class="nav" id="nav" aria-label="Main">{links}</nav></div></header>"""
+<header class="top"><div class="wrap topbar">
+<a class="brand" href="/">{BRAND_MARK}<span>Blue Lock Rivals <b>Codes</b></span></a>
+<div class="search" role="search"><label class="sr" for="q">Search the site</label>
+<input id="q" type="search" placeholder="Search codes and guides" autocomplete="off">
+<span class="search-btn" aria-hidden="true">{icon("search", 20)}</span>
+<ul class="search-results" hidden>{index}</ul></div>
+<a class="pill" href="/guides/">{icon("guides", 18)}<span>All guides</span></a>
+<button class="menu-btn" type="button" aria-expanded="false" aria-controls="nav">Menu</button></div>
+<nav class="nav wrap" id="nav" aria-label="Main">{nav}</nav></header>"""
 
 
 def footer():
@@ -400,23 +468,24 @@ def byline(page):
 
 
 def hero(page):
-    crumbs = "" if page["path"] == "/" else (
-        f'<nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span>{e(page["short"])}</nav>')
-    h1 = f"Blue Lock Rivals Codes ({MONTH_YEAR})" if page["path"] == "/" else page["h1"]
-    lede = ("Every working code for Blue Lock: Rivals on Roblox, checked every 30 minutes."
-            if page["path"] == "/" else page["lede"])
-    return f'<div class="intro">{crumbs}<h1>{e(h1)}</h1><p class="lede">{lede}</p>{byline(page)}</div>'
+    if page["path"] == "/":
+        return f"""<section class="stage"><div class="wrap">
+<div class="stage-head"><h1>Blue Lock Rivals Codes <span>({e(MONTH_YEAR)})</span></h1>
+<p class="lede">Every working code for Blue Lock: Rivals on Roblox, checked every 30 minutes.</p>{byline(page)}</div>
+{feature_cards()}</div></section>{tiles()}"""
+    crumbs = (f'<nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span>{e(page["short"])}</nav>')
+    return f"""<section class="stage stage-sm"><div class="wrap"><div class="stage-head">{crumbs}<h1>{e(page["h1"])}</h1>
+<p class="lede">{page["lede"]}</p>{byline(page)}</div></div></section>"""
 
 
 def render(page):
     body = page["body"]() if callable(page["body"]) else page["body"]
     body += related(page)
-    intro = f'<section class="intro-band"><div class="wrap">{hero(page)}</div></section>'
     if page.get("sidebar", True):
         layout = f'<div class="wrap layout"><main id="main">{body}</main>{sidebar(page)}</div>'
     else:
         layout = f'<div class="wrap layout single"><main id="main">{body}</main></div>'
-    return with_base(head(page) + "<body>" + header(page) + intro + layout + footer() + "</body></html>")
+    return with_base(head(page) + "<body>" + header(page) + hero(page) + layout + footer() + "</body></html>")
 
 
 # --------------------------------------------------------------------------- #
@@ -884,7 +953,7 @@ def feed():
             f'<lastBuildDate>{format_datetime(NOW)}</lastBuildDate>{"".join(items)}</channel></rss>')
 
 
-FAVICON = ('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M6 0h26l-6 32H0z" fill="#D7263D"/>'
+FAVICON = ('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M6 0h26l-6 32H0z" fill="#E8263F"/>'
            '<circle cx="16" cy="16" r="8" fill="none" stroke="#fff" stroke-width="2.4"/><path d="M16 11.2l3.8 2.7-1.4 4.4h-4.8l-1.4-4.4z" fill="#fff"/></svg>')
 
 
@@ -898,20 +967,29 @@ def make_images():
     bold = FONTS / "BarlowCondensed-ExtraBoldItalic.ttf"
     semi = FONTS / "BarlowCondensed-Bold.ttf"
     F = lambda path, size: ImageFont.truetype(str(path), size)
-    ink, accent, muted, line = "#2A0B12", "#D7263D", "#7A5A60", "#F0E2E4"
     W, H = 1200, 630
-    im = Image.new("RGB", (W, H), "white")
+    im = Image.new("RGB", (W, H), "#0B0B10")
     d = ImageDraw.Draw(im)
-    d.rectangle([0, 0, W, 12], fill=accent)
-    d.text((80, 96), "Blue Lock Rivals", font=F(semi, 64), fill=muted)
-    d.text((80, 168), "CODES", font=F(bold, 170), fill=ink)
-    d.text((84, 360), MONTH_YEAR, font=F(semi, 56), fill=accent)
-    d.line([(80, 456), (W - 80, 456)], fill=line, width=2)
-    summary = f"{len(ACTIVE)} working codes  ·  {TOTAL_SPINS} style spins  ·  {TOTAL_FLOWS} flow spins"
-    d.text((80, 486), summary, font=F(semi, 44), fill=ink)
+    glow = Image.new("RGB", (W, H), "#0B0B10")
+    gd = ImageDraw.Draw(glow)
+    for r, col in ((520, (60, 22, 30)), (380, (110, 34, 34)), (240, (170, 52, 40))):
+        gd.ellipse([W - 260 - r, -120 - r // 3, W - 260 + r, -120 + r + r // 2], fill=col)
+    from PIL import ImageFilter
+    im = Image.blend(im, glow.filter(ImageFilter.GaussianBlur(90)), 0.9)
+    d = ImageDraw.Draw(im)
+    d.text((80, 92), "BLUE LOCK RIVALS", font=F(bold, 92), fill="white")
+    d.text((80, 186), "CODES", font=F(bold, 190), fill="#FF6A1A")
+    d.text((86, 410), MONTH_YEAR.upper(), font=F(semi, 54), fill="#C9CBD6")
+    y = 500
+    d.rounded_rectangle([80, y, 80 + 380, y + 74], radius=14, fill="#E8263F")
+    d.text((104, y + 12), f"+{TOTAL_SPINS} STYLE SPINS", font=F(bold, 46), fill="white")
+    d.rounded_rectangle([480, y, 480 + 360, y + 74], radius=14, fill="#3866FF")
+    d.text((504, y + 12), f"+{TOTAL_FLOWS} FLOW SPINS", font=F(bold, 46), fill="white")
+    d.rounded_rectangle([860, y, 860 + 260, y + 74], radius=14, fill="#17A35E")
+    d.text((884, y + 12), f"{len(ACTIVE)} CODES", font=F(bold, 46), fill="white")
     im.save(DIST / "og.png", optimize=True)
 
-    icon = Image.new("RGB", (180, 180), "#D7263D")
+    icon = Image.new("RGB", (180, 180), "#E8263F")
     di = ImageDraw.Draw(icon)
     di.ellipse([42, 42, 138, 138], outline="white", width=10)
     di.polygon([(90, 64), (112, 80), (104, 106), (76, 106), (68, 80)], fill="white")

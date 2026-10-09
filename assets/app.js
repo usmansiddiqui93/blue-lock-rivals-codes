@@ -93,6 +93,40 @@
       setInterval(tick, 1000);
     }
   }
+  // Site search: filters a pre-rendered list of pages and working codes.
+  var q = document.getElementById("q");
+  if (q) {
+    var box = q.parentNode.querySelector(".search-results");
+    var items = [].slice.call(box.querySelectorAll("li"));
+    var none = document.createElement("li"); none.className = "none"; none.textContent = "No matches. Try \"codes\", \"tier\" or \"spins\".";
+    var idx = -1;
+    var visible = function () { return items.filter(function (li) { return li.classList.contains("show"); }); };
+    var mark = function () {
+      visible().forEach(function (li, i) { li.firstChild.classList.toggle("active", i === idx); });
+    };
+    var run = function () {
+      var term = q.value.trim().toLowerCase();
+      idx = -1;
+      if (!term) { box.hidden = true; return; }
+      var hits = 0;
+      items.forEach(function (li) {
+        var ok = li.textContent.toLowerCase().indexOf(term) !== -1 && hits < 8;
+        li.classList.toggle("show", ok); if (ok) hits++;
+      });
+      if (!hits) { box.appendChild(none); } else if (none.parentNode) { none.parentNode.removeChild(none); }
+      box.hidden = false; mark();
+    };
+    q.addEventListener("input", run);
+    q.addEventListener("focus", run);
+    q.addEventListener("keydown", function (ev) {
+      var vis = visible();
+      if (ev.key === "ArrowDown") { idx = Math.min(idx + 1, vis.length - 1); mark(); ev.preventDefault(); }
+      else if (ev.key === "ArrowUp") { idx = Math.max(idx - 1, 0); mark(); ev.preventDefault(); }
+      else if (ev.key === "Enter") { var t = vis[Math.max(idx, 0)]; if (t) location.href = t.firstChild.href; }
+      else if (ev.key === "Escape") { box.hidden = true; q.blur(); }
+    });
+    document.addEventListener("click", function (ev) { if (!q.parentNode.contains(ev.target)) box.hidden = true; });
+  }
   // Relative "checked x min ago"
   document.querySelectorAll("time[data-rel]").forEach(function (t) {
     var d = new Date(t.getAttribute("datetime"));
