@@ -390,3 +390,11 @@ a.round:hover,.play:hover .round{background:#2A2A36;color:#fff}
 .fcard .fbody{background:none;padding:0 18px 18px}
 .cb-code{word-break:normal;overflow-wrap:anywhere}
 @media (min-width:1001px){.fcards li:only-child{max-width:520px}}
+
+/* keyword wordmark: "Blue Lock Rivals" + CODES tag */
+.logo{align-items:center;gap:6px}
+.logo-word{font:900 italic 27px/1 var(--body);letter-spacing:-.025em;text-transform:uppercase;white-space:nowrap;padding-right:3px}
+.logo-tag{font-size:13px;padding:5px 8px;margin-bottom:0}
+@media (max-width:1180px){.logo-word{font-size:23px}}
+@media (max-width:900px){.logo-word{font-size:22px}}
+@media (max-width:420px){.logo-word{font-size:17.5px}.logo-tag{font-size:10.5px;padding:4px 6px}.logo{gap:4px}}

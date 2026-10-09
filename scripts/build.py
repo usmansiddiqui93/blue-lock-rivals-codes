@@ -456,7 +456,7 @@ def header(page):
     index += "".join(f'<li data-cat="codes"><a href="/">Code: {e(c["code"])} ({e(reward_text(c))})</a></li>' for c in ACTIVE)
     return f"""<a class="skip" href="#main">Skip to content</a>
 <header class="top"><div class="wrap topbar">
-<a class="logo" href="/" aria-label="{e(SITE['name'])} home"><span class="logo-word">BLR</span><span class="logo-tag">codes</span></a>
+<a class="logo" href="/" title="{e(SITE['name'])}"><span class="logo-word">Blue Lock Rivals</span><span class="logo-tag">Codes</span></a>
 <div class="search" role="search"><label class="sr" for="q">Search the site</label>
 <input id="q" type="search" placeholder="What are you looking for?" autocomplete="off">
 <label class="sr" for="qcat">Search in</label>
