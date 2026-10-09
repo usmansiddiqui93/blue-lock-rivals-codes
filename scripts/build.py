@@ -276,18 +276,18 @@ def sidebar(page):
     guides = "".join(f'<li><a href="{e(p["path"])}">{e(p["short"])}</a></li>'
                      for p in PAGES if p.get("blurb") and p["path"] != page["path"])
     return f"""<aside>
-<div class="panel"><h3>Code tracker</h3>
+<div class="panel tracker"><h3><span class="live" aria-hidden="true"></span>Code tracker</h3>
 <p class="status">Last checked <b><time data-rel datetime="{e(CHECKED)}">{e(nice_date(CHECKED))}</time></b></p>
 <p class="status"><b>{len(ACTIVE)}</b> working and <b>{len(EXPIRED)}</b> expired codes tracked. The list is rechecked every 30 minutes.</p>
 <p class="status"><a href="/next-update/">Next update countdown</a></p></div>
 {ad("sidebar")}
-<div class="panel"><h3>Quick tips</h3><ul class="tips">
+<div class="panel tips-panel"><h3>Quick tips</h3><ul class="tips">
 <li><strong>Redeem fast.</strong> Codes can stop working within days.</li>
 <li><strong>Copy, don't type.</strong> Codes are case-sensitive.</li>
 <li><strong>They stack.</strong> Every working code redeems on the same account.</li>
 <li><strong>Check on Saturdays.</strong> Most updates and codes land then.</li></ul></div>
-<div class="panel"><h3>Guides</h3><ul class="linklist">{guides}</ul></div>
-<div class="panel"><div class="author"><div class="avatar">{avatar}</div><div>
+<div class="panel guides-panel"><h3>Guides</h3><ul class="linklist">{guides}</ul></div>
+<div class="panel author-panel"><div class="author"><div class="avatar">{avatar}</div><div>
 <strong>{e(a)}</strong><span class="muted role">{e(SITE['author_role'])}</span></div></div>
 <p class="status" style="margin-top:12px">New codes are published only after two independent sources confirm them. <a href="/about/">How we check codes</a></p></div>
 </aside>"""
@@ -358,7 +358,7 @@ def head(page):
 <link rel="manifest" href="/site.webmanifest">
 <link rel="alternate" type="application/rss+xml" title="New Blue Lock Rivals codes" href="/feed.xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@600;700&display=swap">
 <link rel="stylesheet" href="/assets/style.css?v={int(NOW.timestamp())}">
 <script type="application/ld+json">{json_ld(page)}</script>
 {adsense}</head>"""
@@ -445,7 +445,7 @@ HOME_FAQ = [
 def home_body():
     return (toc([("codes", "Working codes"), ("redeem", "How to redeem"), ("not-working", "Code not working?"),
                  ("release", "When new codes drop"), ("expired", "Expired codes"), ("faq", "FAQ")])
-            + block("codes", "New Blue Lock Rivals codes today",
+            + block("codes", "Working Blue Lock Rivals codes today",
                     codes_answer() + tickets(ACTIVE) + f'<div class="actions">{copy_all_button()}</div>')
             + ad("in-content")
             + block("redeem", "How to redeem codes in Blue Lock Rivals",
