@@ -213,14 +213,18 @@ def feature_cards():
 def alerts_form(variant="panel"):
     ep = e(SITE.get("alerts_endpoint", ""))
     uid = "al-" + variant
-    return f"""<form class="alerts-form {variant}" data-endpoint="{ep}" novalidate>
+    return f"""<div class="alerts-wrap"><form class="alerts-form {variant}" data-endpoint="{ep}" novalidate>
 <label class="sr" for="{uid}">Email address</label>
 <div class="af-row"><input id="{uid}" name="email" type="email" inputmode="email" autocomplete="email" placeholder="you@example.com" required>
 <button type="submit">{icon("bell", 18)}<span>Notify me</span></button></div>
 <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
 <p class="af-msg" role="status" aria-live="polite"></p>
 <p class="af-note">One email per new code. Confirm by email, unsubscribe in one click. <a href="/privacy-policy.html">Privacy</a></p>
-</form>"""
+</form>
+<div class="push-box {variant}" data-endpoint="{ep}" hidden>
+<div class="push-or"><span>or</span></div>
+<button class="push-btn" type="button">{icon("bell", 18)}<span class="push-label">Turn on browser notifications</span></button>
+<p class="push-msg" role="status" aria-live="polite"></p></div></div>"""
 
 
 def copy_button(code, label="Copy"):
@@ -362,8 +366,8 @@ def sidebar(page):
     guides = "".join(f'<li><a href="{e(p["path"])}">{e(p["short"])}</a></li>'
                      for p in PAGES if p.get("blurb") and p["path"] != page["path"])
     alerts = "" if page["path"].startswith("/alerts/") else (
-        f'<div class="panel alerts-panel"><h3>{icon("bell", 18)} Get new codes by email</h3>'
-        f'<p class="status">Be first to redeem. We email you the moment a new code goes live.</p>{alerts_form("side")}</div>')
+        f'<div class="panel alerts-panel"><h3>{icon("bell", 18)} Get new code alerts</h3>'
+        f'<p class="status">Be first to redeem. Get an email or a browser notification the moment a new code goes live.</p>{alerts_form("side")}</div>')
     return f"""<aside>
 {alerts}
 <div class="panel tracker"><h3><span class="live" aria-hidden="true"></span>Code tracker</h3>
@@ -482,7 +486,7 @@ def header(page):
 <ul class="search-results" hidden>{index}</ul></div>
 <div class="actions-top">
 <a class="round" href="{e(SITE['discord_url'])}" target="_blank" rel="noopener" title="Official Discord">{icon("chat", 22)}<span class="sr">Official Discord</span></a>
-<a class="round" href="/alerts/" title="Get new codes by email">{icon("bell", 22)}<span class="sr">Get new codes by email</span></a>
+<a class="round" href="/alerts/" title="Get new code alerts">{icon("bell", 22)}<span class="sr">Get new code alerts</span></a>
 <a class="play" href="{e(SITE['roblox_url'])}" target="_blank" rel="noopener"><span class="round">{icon("play", 22)}</span><span class="play-txt"><b>Play</b><b>on Roblox</b></span></a>
 </div>
 <button class="menu-btn" type="button" aria-expanded="false" aria-controls="nav">Menu</button></div>
@@ -526,7 +530,7 @@ def render(page):
         layout = f'<div class="wrap layout"><main id="main">{body}</main>{sidebar(page)}</div>'
     else:
         layout = f'<div class="wrap layout single"><main id="main">{body}</main></div>'
-    return with_base(head(page) + "<body>" + header(page) + hero(page) + layout + footer() + "</body></html>")
+    return with_base(head(page) + f'<body data-base="{BASE}">' + header(page) + hero(page) + layout + footer() + "</body></html>")
 
 
 # --------------------------------------------------------------------------- #
@@ -563,7 +567,7 @@ def home_body():
                  ("release", "When new codes drop"), ("expired", "Expired codes"), ("faq", "FAQ")])
             + block("codes", "Working Blue Lock Rivals codes today",
                     codes_answer() + tickets(ACTIVE) + f'<div class="actions">{copy_all_button()}</div>')
-            + f'<section class="alerts-band" id="alerts"><div><h2>Never miss a code</h2><p>Get an email the moment a new Blue Lock Rivals code drops. Free, one email per code, unsubscribe anytime.</p></div>{alerts_form("band")}</section>'
+            + f'<section class="alerts-band" id="alerts"><div><h2>Never miss a code</h2><p>Get an email or a browser notification the moment a new Blue Lock Rivals code drops. Free, one alert per code, turn it off anytime.</p></div>{alerts_form("band")}</section>'
             + ad("in-content")
             + block("redeem", "How to redeem codes in Blue Lock Rivals",
                     redeem_steps() + '<p style="margin-top:16px">More detail, including where the Codes button is on mobile and console, is in the <a href="/how-to-redeem/">full redeem guide</a>.</p>')
@@ -851,12 +855,13 @@ ALERTS_FAQ = [
     ("How often will I get emails?", "Only when a new code goes live, usually once or twice a week. Each code is emailed once."),
     ("Do I have to confirm?", "Yes. After you sign up we send a confirmation email. You're only subscribed once you click the link in it."),
     ("How do I unsubscribe?", "Every email has an unsubscribe link at the bottom. One click and you're off the list."),
+    ("How do browser notifications work?", "Click Turn on browser notifications and allow them when your browser asks. You'll get a pop-up for every new code, even when this site isn't open. Click the same button again to turn them off. On iPhone and iPad, add the site to your Home Screen first."),
     ("What do you do with my email?", "We only use it to send new code alerts. It's never sold or shared. See the <a href=\"/privacy-policy.html\">privacy policy</a>."),
 ]
 
 
 def alerts_body():
-    return (block("signup", "Get new Blue Lock Rivals codes by email",
+    return (block("signup", "Get new Blue Lock Rivals codes by email or notification",
                   '<p>Enter your email and we\'ll send you every new code the moment it goes live, so you can redeem it before it expires.</p>'
                   + alerts_form("page")
                   + '<div class="prose" style="margin-top:18px"><ul><li>One email per new code, nothing else</li>'
@@ -887,6 +892,7 @@ def privacy_body():
     return block("privacy", "Privacy policy",
                  f'<div class="prose"><h3>What we collect</h3><p>This site has no accounts. The only personal data we collect is your email address, and only if you sign up for code alerts.</p>'
                  '<h3>Email alerts</h3><p>If you subscribe, we store your email address, the date you signed up and confirmed, and your subscription status. We use it only to send you an email when a new Blue Lock Rivals code is released. You are subscribed only after you click the link in our confirmation email (double opt-in).</p>'
+                 '<h3>Browser notifications</h3><p>If you turn on browser notifications, your browser gives us a technical address for its notification service (no name or email). We store it only to send new-code alerts and delete it when you turn notifications off or the browser stops accepting them.</p>'
                  '<p>Subscriber data is stored with Supabase in the European Union (Frankfurt), and emails are sent through Resend. We never sell or share your email. Every email includes a one-click unsubscribe link. To have your data deleted entirely, email us at the address below.</p>'
                  '<h3>Hosting</h3><p>The site is hosted on GitHub Pages. GitHub may log technical data such as IP addresses for security. See GitHub\'s privacy statement for details.</p>'
                  '<h3>Advertising</h3><p>If advertising is enabled, Google AdSense and its partners may use cookies to show ads based on your visits to this and other sites. You can opt out of personalised ads at <a href="https://adssettings.google.com" target="_blank" rel="noopener">Google Ads Settings</a>.</p>'
@@ -988,9 +994,9 @@ PAGES = [
          description="Muhammad Usman Siddiqui runs Blue Lock Rivals Codes, tracking every new code and writing the site's style, flow and tier list guides.",
          body=author_body, schema_type="ProfilePage"),
     dict(path="/alerts/", out="alerts/index.html", short="Email alerts",
-         title="Blue Lock Rivals Code Alerts: Get New Codes by Email",
-         h1="Blue Lock Rivals code alerts", lede="Get an email the moment a new code drops.",
-         description="Sign up for free Blue Lock Rivals code alerts. Get an email the moment a new code goes live, one email per code, unsubscribe anytime.",
+         title="Blue Lock Rivals Code Alerts: Email & Browser Notifications",
+         h1="Blue Lock Rivals code alerts", lede="Get an email or a browser notification the moment a new code drops.",
+         description="Free Blue Lock Rivals code alerts by email or browser notification. Get told the moment a new code goes live, one alert per code, turn off anytime.",
          body=alerts_body, faq=ALERTS_FAQ, blurb="New codes straight to your inbox.", related=["/", "/next-update/", "/how-to-redeem/"]),
     dict(path="/alerts/confirmed/", out="alerts/confirmed/index.html", short="Subscribed", title="You're subscribed",
          h1="You're subscribed", lede="New codes will now come straight to your inbox.", description="Email alerts confirmed.",
@@ -1123,6 +1129,7 @@ def build():
     api.mkdir()
     (api / "codes.json").write_text(json.dumps({"updated": CODES.get("updated"), "last_checked": CHECKED, "active": ACTIVE,
                                                  "expired": [c["code"] for c in EXPIRED]}, ensure_ascii=False, indent=1), encoding="utf-8")
+    shutil.copy2(ASSETS / "sw.js", DIST / "sw.js")
     make_images()
     print(f"Built {len(PAGES) + 1} pages -> dist/  ({len(ACTIVE)} active, {len(EXPIRED)} expired){'  [preview: ' + BASE + ']' if PREVIEW else ''}")
 

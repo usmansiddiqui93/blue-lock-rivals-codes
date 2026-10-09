@@ -3,7 +3,10 @@
 //   GET  /alerts/confirm?t=…      -> confirms, redirects to the site
 //   GET  /alerts/unsubscribe?t=…  -> unsubscribes, redirects to the site
 //   POST /alerts/unsubscribe?t=…  -> RFC 8058 one-click unsubscribe (mail clients)
-//   POST /alerts/notify           -> emails confirmed subscribers about codes not announced yet
+//   POST /alerts/notify           -> emails + browser-pushes subscribers about codes not announced yet
+//   GET  /alerts/vapid            -> public key browsers need to subscribe to push
+//   POST /alerts/push-subscribe   { subscription }   -> stores a browser push subscription
+//   POST /alerts/push-unsubscribe { endpoint }       -> removes it
 //
 // /notify is safe to call publicly: it only announces codes that are already live on the public
 // site, each code at most once (claimed in the database before sending). Calling it again is a no-op.
@@ -11,6 +14,7 @@
 // Secrets (set in the Supabase dashboard): RESEND_API_KEY.
 // Provided automatically: SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY.
 import { createClient } from "npm:@supabase/supabase-js@2";
+import webpush from "npm:web-push@3.6.7";
 
 const SITES = [
   "https://blue-lock-rivals-codes.com",
@@ -36,7 +40,7 @@ function cors(origin: string | null): Record<string, string> {
   const allowed = origin && SITES.includes(origin) ? origin : SITES[0];
   return {
     "Access-Control-Allow-Origin": allowed,
-    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
     "Access-Control-Allow-Headers": "content-type",
     "Vary": "Origin",
   };
@@ -154,6 +158,96 @@ async function unsubscribe(req: Request, url: URL) {
   return redirect(`${siteBaseFor(origin)}/alerts/unsubscribed/`);
 }
 
+// ---------------------------------------------------------------- browser push
+
+let vapidCache: { publicKey: string; privateKey: string } | null = null;
+async function vapid() {
+  if (vapidCache) return vapidCache;
+  const { data } = await db.from("app_config").select("value").eq("key", "vapid").maybeSingle();
+  if (data?.value?.publicKey) {
+    vapidCache = data.value;
+  } else {
+    const keys = webpush.generateVAPIDKeys();
+    // ignoreDuplicates: if two cold starts race, both re-read the winner below.
+    await db.from("app_config").upsert({ key: "vapid", value: keys }, { onConflict: "key", ignoreDuplicates: true });
+    const { data: again } = await db.from("app_config").select("value").eq("key", "vapid").single();
+    vapidCache = again!.value;
+  }
+  webpush.setVapidDetails(`mailto:${REPLY_TO}`, vapidCache!.publicKey, vapidCache!.privateKey);
+  return vapidCache!;
+}
+
+const PUSH_HOSTS = /^https:\/\/([a-z0-9.-]+\.)?(googleapis\.com|mozilla\.com|mozaws\.net|windows\.com|notify\.windows\.com|push\.apple\.com)\//i;
+
+async function pushSubscribe(req: Request, origin: string | null) {
+  if (!origin || !SITES.includes(origin)) return json({ ok: false, error: "Forbidden" }, 403, origin);
+  let body: { subscription?: { endpoint?: string; keys?: { p256dh?: string; auth?: string } } };
+  try { body = await req.json(); } catch { return json({ ok: false, error: "Bad request" }, 400, origin); }
+  const sub = body.subscription;
+  const endpoint = String(sub?.endpoint || "");
+  const p256dh = String(sub?.keys?.p256dh || ""), auth = String(sub?.keys?.auth || "");
+  if (!PUSH_HOSTS.test(endpoint) || endpoint.length > 1000 || !p256dh || !auth || p256dh.length > 200 || auth.length > 100) {
+    return json({ ok: false, error: "This browser's notification service isn't supported." }, 400, origin);
+  }
+  const { error } = await db.from("push_subscriptions")
+    .upsert({ endpoint, p256dh, auth, origin, failures: 0 }, { onConflict: "endpoint" });
+  if (error) return json({ ok: false, error: "Could not save. Please try again." }, 500, origin);
+  // Welcome ping so people see it works right away.
+  try {
+    await vapid();
+    await webpush.sendNotification({ endpoint, keys: { p256dh, auth } }, JSON.stringify({
+      title: "Browser alerts are on",
+      body: "We'll notify you here the moment a new Blue Lock Rivals code drops.",
+      url: `${siteBaseFor(origin)}/`, icon: `${siteBaseFor(origin)}/icon-192.png`, tag: "blr-welcome",
+    }), { TTL: 3600 });
+  } catch (e) { console.error("welcome push failed", e); }
+  return json({ ok: true }, 200, origin);
+}
+
+async function pushUnsubscribe(req: Request, origin: string | null) {
+  if (!origin || !SITES.includes(origin)) return json({ ok: false, error: "Forbidden" }, 403, origin);
+  let body: { endpoint?: string };
+  try { body = await req.json(); } catch { return json({ ok: false, error: "Bad request" }, 400, origin); }
+  if (body.endpoint) await db.from("push_subscriptions").delete().eq("endpoint", String(body.endpoint));
+  return json({ ok: true }, 200, origin);
+}
+
+async function pushAll(codes: Code[]): Promise<number> {
+  await vapid();
+  const title = codes.length === 1 ? `New code: ${codes[0].code}` : `${codes.length} new Blue Lock Rivals codes`;
+  const bodyText = codes.length === 1 ? `${rewardText(codes[0])}. Tap to copy it before it expires.`
+                                      : codes.map((c) => c.code).join(", ");
+  let sent = 0, from = 0;
+  const PAGE = 500;
+  while (true) {
+    const { data: subs } = await db.from("push_subscriptions").select("*").order("created_at").range(from, from + PAGE - 1);
+    if (!subs?.length) break;
+    // Small parallel waves keep us well inside the function's time limit without hammering push services.
+    for (let i = 0; i < subs.length; i += 25) {
+      await Promise.all(subs.slice(i, i + 25).map(async (s) => {
+        const base = siteBaseFor(s.origin);
+        try {
+          await webpush.sendNotification({ endpoint: s.endpoint, keys: { p256dh: s.p256dh, auth: s.auth } },
+            JSON.stringify({ title, body: bodyText, url: `${base}/`, icon: `${base}/icon-192.png`, tag: "blr-new-code" }),
+            { TTL: 6 * 3600, urgency: "high" });
+          sent++;
+          await db.from("push_subscriptions").update({ last_success_at: new Date().toISOString(), failures: 0 }).eq("endpoint", s.endpoint);
+        } catch (e) {
+          const status = (e as { statusCode?: number }).statusCode;
+          if (status === 404 || status === 410 || (s.failures + 1) >= 5) {
+            await db.from("push_subscriptions").delete().eq("endpoint", s.endpoint);
+          } else {
+            await db.from("push_subscriptions").update({ failures: s.failures + 1 }).eq("endpoint", s.endpoint);
+          }
+        }
+      }));
+    }
+    if (subs.length < PAGE) break;
+    from += PAGE;
+  }
+  return sent;
+}
+
 type Code = { code: string; reward?: string; spins?: number; flows?: number };
 
 async function liveCodes(): Promise<{ codes: Code[]; base: string } | null> {
@@ -210,7 +304,7 @@ async function notify() {
 
   let sent = 0, from = 0;
   const PAGE = 100;
-  while (true) {
+  while (Deno.env.get("RESEND_API_KEY")) {
     const { data: subs } = await db.from("subscribers").select("email,unsub_token,origin")
       .eq("status", "confirmed").order("created_at").range(from, from + PAGE - 1);
     if (!subs?.length) break;
@@ -235,8 +329,11 @@ async function notify() {
     if (subs.length < PAGE) break;
     from += PAGE;
   }
-  await db.from("notified_codes").update({ recipients: sent }).in("code", toSend.map((c) => c.code.toUpperCase()));
-  return json({ ok: true, codes: toSend.map((c) => c.code), sent }, 200, null);
+  let pushed = 0;
+  try { pushed = await pushAll(toSend); } catch (e) { console.error("push failed", e); }
+  await db.from("notified_codes").update({ recipients: sent, push_recipients: pushed })
+    .in("code", toSend.map((c) => c.code.toUpperCase()));
+  return json({ ok: true, codes: toSend.map((c) => c.code), sent, pushed }, 200, null);
 }
 
 Deno.serve(async (req) => {
@@ -249,6 +346,13 @@ Deno.serve(async (req) => {
     if (route === "/confirm" && req.method === "GET") return await confirm(url);
     if (route === "/unsubscribe") return await unsubscribe(req, url);
     if (route === "/notify" && req.method === "POST") return await notify();
+    if (route === "/vapid" && req.method === "GET") {
+      const k = await vapid();
+      return new Response(JSON.stringify({ publicKey: k.publicKey }), {
+        headers: { "content-type": "application/json", "cache-control": "public, max-age=3600", ...cors(origin) } });
+    }
+    if (route === "/push-subscribe" && req.method === "POST") return await pushSubscribe(req, origin);
+    if (route === "/push-unsubscribe" && req.method === "POST") return await pushUnsubscribe(req, origin);
     return json({ ok: false, error: "Not found" }, 404, origin);
   } catch (e) {
     console.error(e);
