@@ -398,3 +398,35 @@ a.round:hover,.play:hover .round{background:#2A2A36;color:#fff}
 @media (max-width:1180px){.logo-word{font-size:23px}}
 @media (max-width:900px){.logo-word{font-size:22px}}
 @media (max-width:420px){.logo-word{font-size:17.5px}.logo-tag{font-size:10.5px;padding:4px 6px}.logo{gap:4px}}
+
+/* ================= Email alerts ================= */
+.alerts-form{margin:0}
+.af-row{display:flex;gap:8px}
+.alerts-form input[type=email]{flex:1;min-width:0;height:48px;border:2px solid var(--line);border-radius:12px;padding:0 14px;font:500 16px var(--body);color:var(--ink);background:#fff}
+.alerts-form input[type=email]:focus{border-color:var(--orange);outline:none;box-shadow:0 0 0 4px rgba(255,106,26,.18)}
+.alerts-form button{flex:none;display:inline-flex;align-items:center;gap:7px;height:48px;padding:0 16px;border:0;border-radius:12px;background:var(--hot);color:#fff;font:800 15.5px var(--body);cursor:pointer}
+.alerts-form button:hover{filter:brightness(1.07)}
+.alerts-form button[disabled]{opacity:.65;cursor:wait}
+.alerts-form .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+.af-msg{margin:8px 0 0;font-weight:700;font-size:15px;min-height:0}
+.af-msg:empty{display:none}
+.af-msg.ok{color:var(--green)}
+.af-msg.err{color:var(--red)}
+.af-note{margin:8px 0 0;font-size:13px;color:var(--muted)}
+.alerts-form.side .af-row{flex-direction:column}
+.alerts-form.side button{justify-content:center}
+.panel.alerts-panel{box-shadow:0 0 0 2px var(--orange),0 12px 28px -18px rgba(232,38,63,.7)}
+.panel.alerts-panel>h3{background:var(--hot);color:#fff;border-bottom:0;display:flex;align-items:center;gap:8px}
+.alerts-band{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:22px;align-items:center;margin:0 0 20px;padding:24px 26px;border-radius:var(--r);color:#fff;
+  background:radial-gradient(500px 220px at 0% 0%,rgba(255,106,26,.35),transparent 70%),linear-gradient(120deg,#14141C,#24243A)}
+.alerts-band h2{color:#fff;margin:0 0 6px}
+.alerts-band p{margin:0;color:#C9CBD6}
+.alerts-band .af-note{color:#A8ABB9}
+.alerts-band .af-note a{color:#fff}
+.alerts-band .alerts-form input[type=email]{border-color:transparent}
+.alerts-band .af-msg.ok{color:#5BE39A}
+.alerts-band .af-msg.err{color:#FF8A9A}
+@media (max-width:760px){.alerts-band{grid-template-columns:1fr;padding:20px 18px}}
+@media (max-width:420px){.alerts-form .af-row{flex-direction:column}.alerts-form button{justify-content:center}}
+.alerts-form.side input[type=email]{flex:none;width:100%}
+@media (max-width:420px){.alerts-form input[type=email]{flex:none;width:100%}}

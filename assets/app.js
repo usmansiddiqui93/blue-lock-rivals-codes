@@ -140,6 +140,32 @@
     });
     document.addEventListener("click", function (ev) { if (!q.parentNode.contains(ev.target)) box.hidden = true; });
   }
+  // Email alerts sign-up
+  document.querySelectorAll(".alerts-form").forEach(function (f) {
+    f.addEventListener("submit", function (ev) {
+      ev.preventDefault();
+      var msg = f.querySelector(".af-msg"), btn = f.querySelector("button"), input = f.querySelector("input[type=email]");
+      var say2 = function (t, ok) { msg.textContent = t; msg.className = "af-msg " + (ok ? "ok" : "err"); };
+      var email = input.value.trim();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { say2("Please enter a valid email address.", false); input.focus(); return; }
+      var ep = f.getAttribute("data-endpoint");
+      if (!ep) { say2("Email alerts are launching very soon. Please check back shortly.", false); return; }
+      btn.disabled = true;
+      fetch(ep.replace(/\/$/, "") + "/subscribe", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email, website: f.querySelector(".hp").value })
+      }).then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { return { r: r, j: j }; }); })
+        .then(function (x) {
+          if (x.r.ok && x.j.ok) {
+            say2(x.j.already ? "You're already subscribed. New codes will come straight to your inbox."
+                             : "Almost done! Check your inbox and click the link to confirm.", true);
+            input.value = "";
+          } else { say2(x.j.error || "Something went wrong. Please try again.", false); }
+        })
+        .catch(function () { say2("Couldn't reach the server. Check your connection and try again.", false); })
+        .then(function () { btn.disabled = false; });
+    });
+  });
   // Relative "checked x min ago"
   document.querySelectorAll("time[data-rel]").forEach(function (t) {
     var d = new Date(t.getAttribute("datetime"));

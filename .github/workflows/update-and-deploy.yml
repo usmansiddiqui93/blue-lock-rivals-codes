@@ -86,3 +86,18 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
+
+  # Emails subscribers about any code that's now live but hasn't been announced yet.
+  # Safe to run every time: each code is emailed at most once (tracked in the database).
+  notify:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Send new-code emails
+        run: |
+          EP=$(python3 -c "import json;print(json.load(open('data/site.json')).get('alerts_endpoint',''))")
+          if [ -z "$EP" ]; then echo "Email alerts not configured yet - skipping."; exit 0; fi
+          sleep 20   # let GitHub Pages finish publishing the new codes feed
+          curl -sS --fail-with-body -X POST "$EP/notify" || echo "::warning::Alert endpoint returned an error"
+

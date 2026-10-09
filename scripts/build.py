@@ -210,6 +210,19 @@ def feature_cards():
     return '<ul class="fcards">' + "".join(cards) + "</ul>"
 
 
+def alerts_form(variant="panel"):
+    ep = e(SITE.get("alerts_endpoint", ""))
+    uid = "al-" + variant
+    return f"""<form class="alerts-form {variant}" data-endpoint="{ep}" novalidate>
+<label class="sr" for="{uid}">Email address</label>
+<div class="af-row"><input id="{uid}" name="email" type="email" inputmode="email" autocomplete="email" placeholder="you@example.com" required>
+<button type="submit">{icon("bell", 18)}<span>Notify me</span></button></div>
+<input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+<p class="af-msg" role="status" aria-live="polite"></p>
+<p class="af-note">One email per new code. Confirm by email, unsubscribe in one click. <a href="/privacy-policy.html">Privacy</a></p>
+</form>"""
+
+
 def copy_button(code, label="Copy"):
     return f'<button class="copy" type="button" data-copy="{e(code)}" aria-label="Copy code {e(code)}">{e(label)}</button>'
 
@@ -348,7 +361,11 @@ def sidebar(page):
               if (ASSETS / "author.jpg").exists() else e(initials))
     guides = "".join(f'<li><a href="{e(p["path"])}">{e(p["short"])}</a></li>'
                      for p in PAGES if p.get("blurb") and p["path"] != page["path"])
+    alerts = "" if page["path"].startswith("/alerts/") else (
+        f'<div class="panel alerts-panel"><h3>{icon("bell", 18)} Get new codes by email</h3>'
+        f'<p class="status">Be first to redeem. We email you the moment a new code goes live.</p>{alerts_form("side")}</div>')
     return f"""<aside>
+{alerts}
 <div class="panel tracker"><h3><span class="live" aria-hidden="true"></span>Code tracker</h3>
 <p class="status">Last checked <b><time data-rel datetime="{e(CHECKED)}">{e(nice_date(CHECKED))}</time></b></p>
 <p class="status"><b>{len(ACTIVE)}</b> working and <b>{len(EXPIRED)}</b> expired codes tracked. The list is rechecked every 30 minutes.</p>
@@ -452,7 +469,7 @@ def header(page):
         for i, t, u, b in NAV2)
     cta = f'<a class="cta" href="/free-spins/">{icon("plus", 20)}<span>Get free spins</span></a>'
     index = "".join(f'<li data-cat="guides"><a href="{e(p["path"])}">{e(p["short"])}</a></li>'
-                    for p in PAGES if p["path"] not in ("/privacy-policy.html",))
+                    for p in PAGES if p["path"] not in ("/privacy-policy.html",) and not p.get("noindex"))
     index += "".join(f'<li data-cat="codes"><a href="/">Code: {e(c["code"])} ({e(reward_text(c))})</a></li>' for c in ACTIVE)
     return f"""<a class="skip" href="#main">Skip to content</a>
 <header class="top"><div class="wrap topbar">
@@ -465,7 +482,7 @@ def header(page):
 <ul class="search-results" hidden>{index}</ul></div>
 <div class="actions-top">
 <a class="round" href="{e(SITE['discord_url'])}" target="_blank" rel="noopener" title="Official Discord">{icon("chat", 22)}<span class="sr">Official Discord</span></a>
-<a class="round" href="/feed.xml" title="New code alerts (RSS)">{icon("bell", 22)}<span class="sr">New code alerts</span></a>
+<a class="round" href="/alerts/" title="Get new codes by email">{icon("bell", 22)}<span class="sr">Get new codes by email</span></a>
 <a class="play" href="{e(SITE['roblox_url'])}" target="_blank" rel="noopener"><span class="round">{icon("play", 22)}</span><span class="play-txt"><b>Play</b><b>on Roblox</b></span></a>
 </div>
 <button class="menu-btn" type="button" aria-expanded="false" aria-controls="nav">Menu</button></div>
@@ -474,7 +491,7 @@ def header(page):
 
 def footer():
     order = ["/", "/expired-codes/", "/how-to-redeem/", "/codes-not-working/", "/free-spins/", "/styles/", "/flows/",
-             "/tier-list/", "/controls/", "/beginners-guide/", "/next-update/", "/updates/", "/trello-discord/",
+             "/tier-list/", "/controls/", "/beginners-guide/", "/next-update/", "/updates/", "/alerts/", "/trello-discord/",
              "/about/", "/privacy-policy.html"]
     links = "".join(f'<a href="{e(p["path"])}">{e(p["short"])}</a>' for path in order for p in PAGES if p["path"] == path)
     return f"""<footer><div class="wrap"><nav aria-label="Footer">{links}</nav>
@@ -546,6 +563,7 @@ def home_body():
                  ("release", "When new codes drop"), ("expired", "Expired codes"), ("faq", "FAQ")])
             + block("codes", "Working Blue Lock Rivals codes today",
                     codes_answer() + tickets(ACTIVE) + f'<div class="actions">{copy_all_button()}</div>')
+            + f'<section class="alerts-band" id="alerts"><div><h2>Never miss a code</h2><p>Get an email the moment a new Blue Lock Rivals code drops. Free, one email per code, unsubscribe anytime.</p></div>{alerts_form("band")}</section>'
             + ad("in-content")
             + block("redeem", "How to redeem codes in Blue Lock Rivals",
                     redeem_steps() + '<p style="margin-top:16px">More detail, including where the Codes button is on mobile and console, is in the <a href="/how-to-redeem/">full redeem guide</a>.</p>')
@@ -829,6 +847,34 @@ alt="Photo of {e(SITE["author"])}" loading="eager"><div class="prose">
                         f'<li><a href="{e(p["path"])}">{e(p["short"])}</a><span>{e(p["blurb"])}</span></li>' for p in guides) + "</ul>"))
 
 
+ALERTS_FAQ = [
+    ("How often will I get emails?", "Only when a new code goes live, usually once or twice a week. Each code is emailed once."),
+    ("Do I have to confirm?", "Yes. After you sign up we send a confirmation email. You're only subscribed once you click the link in it."),
+    ("How do I unsubscribe?", "Every email has an unsubscribe link at the bottom. One click and you're off the list."),
+    ("What do you do with my email?", "We only use it to send new code alerts. It's never sold or shared. See the <a href=\"/privacy-policy.html\">privacy policy</a>."),
+]
+
+
+def alerts_body():
+    return (block("signup", "Get new Blue Lock Rivals codes by email",
+                  '<p>Enter your email and we\'ll send you every new code the moment it goes live, so you can redeem it before it expires.</p>'
+                  + alerts_form("page")
+                  + '<div class="prose" style="margin-top:18px"><ul><li>One email per new code, nothing else</li>'
+                  '<li>Free, and confirmed by email first</li><li>Unsubscribe in one click from any email</li></ul>'
+                  '<p>Prefer a feed reader? Use the <a href="/feed.xml">RSS feed</a> instead.</p></div>')
+            + block("faq", "Email alerts FAQ", faq_html(ALERTS_FAQ)))
+
+
+def alerts_done_body(kind):
+    if kind == "confirmed":
+        return block("done", "You're subscribed",
+                     '<p>Thanks for confirming. The next time a new Blue Lock Rivals code goes live, it\'ll land in your inbox.</p>'
+                     '<p><a class="btn" href="/">See today\'s working codes</a></p>')
+    return block("done", "You're unsubscribed",
+                 '<p>You won\'t get any more code alerts. Changed your mind? You can <a href="/alerts/">subscribe again</a> anytime.</p>'
+                 '<p><a class="btn" href="/">See today\'s working codes</a></p>')
+
+
 def about_body():
     return block("about", "About this site",
                  f'<div class="prose"><p>{e(SITE["name"])} exists so you never miss a free code for Blue Lock: Rivals. It is run by <a href="{e(SITE["author_url"])}">{e(SITE["author"])}</a>, a long-time player.</p>'
@@ -839,7 +885,9 @@ def about_body():
 
 def privacy_body():
     return block("privacy", "Privacy policy",
-                 f'<div class="prose"><h3>What we collect</h3><p>This site has no accounts, sign-ups or forms. We don\'t collect your name or email unless you email us.</p>'
+                 f'<div class="prose"><h3>What we collect</h3><p>This site has no accounts. The only personal data we collect is your email address, and only if you sign up for code alerts.</p>'
+                 '<h3>Email alerts</h3><p>If you subscribe, we store your email address, the date you signed up and confirmed, and your subscription status. We use it only to send you an email when a new Blue Lock Rivals code is released. You are subscribed only after you click the link in our confirmation email (double opt-in).</p>'
+                 '<p>Subscriber data is stored with Supabase in the European Union (Frankfurt), and emails are sent through Resend. We never sell or share your email. Every email includes a one-click unsubscribe link. To have your data deleted entirely, email us at the address below.</p>'
                  '<h3>Hosting</h3><p>The site is hosted on GitHub Pages. GitHub may log technical data such as IP addresses for security. See GitHub\'s privacy statement for details.</p>'
                  '<h3>Advertising</h3><p>If advertising is enabled, Google AdSense and its partners may use cookies to show ads based on your visits to this and other sites. You can opt out of personalised ads at <a href="https://adssettings.google.com" target="_blank" rel="noopener">Google Ads Settings</a>.</p>'
                  '<h3>Clipboard</h3><p>Copy buttons use your browser\'s clipboard only. Nothing is sent to us.</p>'
@@ -939,6 +987,17 @@ PAGES = [
          h1="Muhammad Usman Siddiqui", lede="Blue Lock: Rivals player and maintainer of Blue Lock Rivals Codes.",
          description="Muhammad Usman Siddiqui runs Blue Lock Rivals Codes, tracking every new code and writing the site's style, flow and tier list guides.",
          body=author_body, schema_type="ProfilePage"),
+    dict(path="/alerts/", out="alerts/index.html", short="Email alerts",
+         title="Blue Lock Rivals Code Alerts: Get New Codes by Email",
+         h1="Blue Lock Rivals code alerts", lede="Get an email the moment a new code drops.",
+         description="Sign up for free Blue Lock Rivals code alerts. Get an email the moment a new code goes live, one email per code, unsubscribe anytime.",
+         body=alerts_body, faq=ALERTS_FAQ, blurb="New codes straight to your inbox.", related=["/", "/next-update/", "/how-to-redeem/"]),
+    dict(path="/alerts/confirmed/", out="alerts/confirmed/index.html", short="Subscribed", title="You're subscribed",
+         h1="You're subscribed", lede="New codes will now come straight to your inbox.", description="Email alerts confirmed.",
+         body=lambda: alerts_done_body("confirmed"), noindex=True, sidebar=False),
+    dict(path="/alerts/unsubscribed/", out="alerts/unsubscribed/index.html", short="Unsubscribed", title="You're unsubscribed",
+         h1="You're unsubscribed", lede="You won't get any more code alerts.", description="Unsubscribed from email alerts.",
+         body=lambda: alerts_done_body("unsubscribed"), noindex=True, sidebar=False),
     dict(path="/about/", out="about/index.html", short="About", title=f"About {SITE['name']}",
          h1="About this site", lede="Who runs it and how codes are checked.",
          description="Who runs Blue Lock Rivals Codes and how new codes are found and verified.", body=about_body,
@@ -949,7 +1008,7 @@ PAGES = [
 ]
 
 for p in PAGES:
-    if p["path"] not in ("/", "/about/", "/privacy-policy.html", "/guides/", "/author/muhammad-usman-siddiqui/") and "related" not in p:
+    if p["path"] not in ("/", "/about/", "/privacy-policy.html", "/guides/", "/author/muhammad-usman-siddiqui/") and not p.get("noindex") and "related" not in p:
         p["related"] = CORE[:3]
 
 
@@ -959,7 +1018,7 @@ for p in PAGES:
 
 def sitemap():
     urls = []
-    for p in PAGES:
+    for p in [x for x in PAGES if not x.get("noindex")]:
         mod = (p.get("modified") or UPDATED).date().isoformat()
         urls.append(f"<url><loc>{e(ABS + p['path'])}</loc><lastmod>{mod}</lastmod></url>")
     return f'<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{"".join(urls)}</urlset>'
