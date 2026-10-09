@@ -126,14 +126,7 @@ def reward_text(c):
 
 
 def reward_chips(c):
-    out = []
-    if c.get("spins"):
-        out.append(f'<span class="chip spin">{int(c["spins"])} style spins</span>')
-    if c.get("flows"):
-        out.append(f'<span class="chip flow">{int(c["flows"])} flow spins</span>')
-    if not out and c.get("reward"):
-        out.append(f'<span>{e(c["reward"])}</span>')
-    return "".join(out)
+    return e(reward_text(c))
 
 
 def is_new(c):
@@ -150,27 +143,23 @@ def copy_button(code, label="Copy"):
 
 def tickets(codes):
     if not codes:
-        return ('<div class="empty"><strong>No working codes right now.</strong><br>New codes usually arrive with the '
-                'Saturday update. This list refreshes itself as soon as one is confirmed. '
+        return ('<div class="empty"><strong>No working codes right now.</strong> New codes usually arrive with the '
+                'Saturday update, and this list updates itself as soon as one is confirmed. '
                 '<a href="/next-update/">See when the next update lands</a>.</div>')
     rows = []
     for c in codes:
-        new = is_new(c)
-        new_chip = '<span class="chip new">New</span>' if new else ""
-        added = f'<span class="added">Added {e(nice_date(c["added"]))}</span>' if c.get("added") else ""
-        rows.append(
-            f'<li class="ticket{" is-new" if new else ""}"><div><div class="ticket-code">{e(c["code"])}</div>'
-            f'<div class="ticket-meta">{new_chip}{reward_chips(c)}{added}</div></div>'
-            f'{copy_button(c["code"])}</li>')
+        new_tag = '<span class="tag-new">New</span>' if is_new(c) else ""
+        added = f' <span class="added">· added {e(nice_date(c["added"]))}</span>' if c.get("added") else ""
+        rows.append(f'<li class="ticket"><div><div class="ticket-code">{e(c["code"])}</div>'
+                    f'<div class="ticket-meta">{new_tag}{reward_chips(c)}{added}</div></div>{copy_button(c["code"])}</li>')
     return '<ul class="tickets">' + "".join(rows) + "</ul>"
 
 
 def copy_all_button():
-    if not ACTIVE:
+    if len(ACTIVE) < 2:
         return ""
     allcodes = "\n".join(c["code"] for c in ACTIVE)
-    return (f'<button class="btn primary" type="button" data-copy="{e(allcodes)}" data-copy-all>'
-            f'Copy all {len(ACTIVE)} codes</button>')
+    return f'<button class="btn" type="button" data-copy="{e(allcodes)}" data-copy-all>Copy all {len(ACTIVE)} codes</button>'
 
 
 def expired_list(limit=None):
@@ -183,11 +172,9 @@ def rarity_badge(r):
 
 
 def styles_by_rarity():
-    out = []
-    for rarity, names in STYLES["rarities"].items():
-        out.append(f'<div class="rgroup" id="{slug(rarity)}"><h3>{rarity_badge(rarity)} <small>{len(names)} styles</small></h3>'
-                   '<ul class="pills">' + "".join(f'<li class="pill">{e(n)}</li>' for n in names) + "</ul></div>")
-    return "".join(out)
+    return "".join(
+        f'<div class="rgroup" id="{slug(r)}"><h3>{rarity_badge(r)}<small>{len(n)} styles</small></h3><p>{e(", ".join(n))}</p></div>'
+        for r, n in STYLES["rarities"].items())
 
 
 def styles_table():
@@ -219,20 +206,18 @@ def rarity_of(name):
 
 
 def tier_block(kind):
-    return '<div class="tiers">' + "".join(
-        f'<div class="tier t-{e(t)}"><div class="tier-badge" aria-label="{e(t)} tier">{e(t)}</div><ul class="pills">'
-        + "".join(f'<li class="pill">{e(n)}</li>' for n in names) + "</ul></div>"
-        for t, names in TIERS[kind].items()) + "</div>"
+    return '<ul class="tiers">' + "".join(
+        f'<li class="tier t-{e(t)}"><div class="tier-badge" aria-label="{e(t)} tier">{e(t)}</div><p>{e(", ".join(n))}</p></li>'
+        for t, n in TIERS[kind].items()) + "</ul>"
 
 
 def updates_timeline(limit=None):
     ups = sorted(UPDATES["updates"], key=lambda u: u["date"], reverse=True)[:limit]
     items = []
     for u in ups:
-        codes = ", ".join(f"<code>{e(c)}</code>" for c in u.get("codes", []))
-        items.append(f'<li><time datetime="{e(u["date"])}">{e(nice_date(u["date"]))}</time><div>'
-                     f'<strong>{e(u["name"])}</strong>' + (f'<span class="muted">Codes: {codes}</span>' if codes else "")
-                     + "</div></li>")
+        codes = ", ".join(e(c) for c in u.get("codes", []))
+        items.append(f'<li><time datetime="{e(u["date"])}">{e(nice_date(u["date"]))}</time><strong>{e(u["name"])}</strong>'
+                     + (f'<span class="muted">Codes: {codes}</span>' if codes else "") + "</li>")
     return '<ul class="timeline">' + "".join(items) + "</ul>"
 
 
@@ -241,8 +226,7 @@ def faq_html(items):
 
 
 def toc(items):
-    return ('<nav aria-label="On this page"><ul class="toc">'
-            + "".join(f'<li><a href="#{e(i)}">{e(t)}</a></li>' for i, t in items) + "</ul></nav>")
+    return ""
 
 
 def block(id_, title, body):
@@ -268,18 +252,16 @@ def redeem_steps():
 
 def guide_cards(exclude=None):
     cards = [p for p in PAGES if p.get("blurb") and p["path"] != exclude]
-    return '<ul class="cards">' + "".join(
-        f'<li><a class="gcard" href="{e(p["path"])}"><strong>{e(p["short"])}</strong><span>{e(p["blurb"])}</span></a></li>'
-        for p in cards) + "</ul>"
+    return '<ul class="links two">' + "".join(
+        f'<li><a href="{e(p["path"])}">{e(p["short"])}</a><span>{e(p["blurb"])}</span></li>' for p in cards) + "</ul>"
 
 
 def related(page):
-    keys = page.get("related") or []
-    picks = [p for k in keys for p in PAGES if p["path"] == k]
+    picks = [p for k in (page.get("related") or []) for p in PAGES if p["path"] == k]
     if not picks:
         return ""
-    return block("related", "Keep reading", '<ul class="cards">' + "".join(
-        f'<li><a class="gcard" href="{e(p["path"])}"><strong>{e(p["short"])}</strong><span>{e(p.get("blurb") or "Every working code right now.")}</span></a></li>'
+    return block("related", "Related guides", '<ul class="links">' + "".join(
+        f'<li><a href="{e(p["path"])}">{e(p["short"])}</a><span>{e(p.get("blurb") or "Every working code right now.")}</span></li>'
         for p in picks) + "</ul>")
 
 
@@ -361,7 +343,7 @@ def head(page):
 <meta name="description" content="{e(desc)}">
 <meta name="robots" content="{robots}">
 <link rel="canonical" href="{e(url)}">
-<meta name="theme-color" content="#0A1633">
+<meta name="theme-color" content="#FFFFFF">
 <meta name="google-adsense-account" content="{e(SITE['adsense_client'])}">
 <meta name="author" content="{e(SITE['author'])}">
 <meta property="og:type" content="article"><meta property="og:site_name" content="{e(SITE['name'])}">
@@ -376,7 +358,7 @@ def head(page):
 <link rel="manifest" href="/site.webmanifest">
 <link rel="alternate" type="application/rss+xml" title="New Blue Lock Rivals codes" href="/feed.xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,800&family=Barlow:wght@400;500;600;700&family=JetBrains+Mono:wght@600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@600;700&display=swap">
 <link rel="stylesheet" href="/assets/style.css?v={int(NOW.timestamp())}">
 <script type="application/ld+json">{json_ld(page)}</script>
 {adsense}</head>"""
@@ -385,64 +367,46 @@ def head(page):
 def header(page):
     links = "".join(f'<a href="{e(href)}"{" aria-current=page" if href == page["path"] else ""}>{e(label)}</a>'
                     for label, href in SITE["nav"])
-    return f"""<a class="skip" href="#main">Skip to content</a><div class="kit-stripe"></div>
+    return f"""<a class="skip" href="#main">Skip to content</a>
 <header class="top"><div class="wrap">
-<a class="brand" href="/" aria-label="{e(SITE['name'])} home">{BRAND_MARK}<span class="brand-name">Blue Lock Rivals <span>Codes</span></span></a>
+<a class="brand" href="/">{BRAND_MARK}Blue Lock Rivals Codes</a>
 <button class="menu-btn" type="button" aria-expanded="false" aria-controls="nav">Menu</button>
 <nav class="nav" id="nav" aria-label="Main">{links}</nav></div></header>"""
 
 
 def footer():
-    groups = [("Codes", ["/", "/expired-codes/", "/how-to-redeem/", "/codes-not-working/", "/free-spins/"]),
-              ("Guides", ["/styles/", "/flows/", "/tier-list/", "/controls/", "/beginners-guide/"]),
-              ("Game", ["/next-update/", "/updates/", "/trello-discord/", "/about/", "/privacy-policy.html"])]
-    cols = ""
-    for name, paths in groups:
-        links = "".join(f'<li><a href="{e(p["path"])}">{e(p["short"])}</a></li>' for path in paths for p in PAGES if p["path"] == path)
-        cols += f"<div><h2>{e(name)}</h2><ul>{links}</ul></div>"
-    return f"""<footer><div class="wrap"><div class="foot-cols">{cols}</div>
-<p class="foot-note">{e(SITE['domain'])} is an independent fan site, not affiliated with Roblox Corporation, {e(SITE['developer'])}, Kodansha or the creators of Blue Lock. Trademarks belong to their owners. Contact: <a href="mailto:{e(SITE['contact_email'])}">{e(SITE['contact_email'])}</a>. © {YEAR} {e(SITE['name'])}.</p>
+    order = ["/", "/expired-codes/", "/how-to-redeem/", "/codes-not-working/", "/free-spins/", "/styles/", "/flows/",
+             "/tier-list/", "/controls/", "/beginners-guide/", "/next-update/", "/updates/", "/trello-discord/",
+             "/about/", "/privacy-policy.html"]
+    links = "".join(f'<a href="{e(p["path"])}">{e(p["short"])}</a>' for path in order for p in PAGES if p["path"] == path)
+    return f"""<footer><div class="wrap"><nav aria-label="Footer">{links}</nav>
+<p>{e(SITE['domain'])} is an independent fan site, not affiliated with Roblox Corporation, {e(SITE['developer'])}, Kodansha or the creators of Blue Lock. Contact: <a href="mailto:{e(SITE['contact_email'])}">{e(SITE['contact_email'])}</a>. © {YEAR}.</p>
 </div></footer><script src="/assets/app.js" defer></script>"""
 
 
 def byline(page):
     mod = page.get("modified") or UPDATED
+    checked = ""
+    if page["path"] == "/":
+        checked = f' · Codes checked <time data-rel datetime="{e(CHECKED)}">{e(nice_date(CHECKED))}</time>'
     return (f'<p class="byline">Updated <time datetime="{e(mod.isoformat())}">{e(nice_date(mod))}</time> by '
-            f'<a href="/about/">{e(SITE["author"])}</a></p>')
+            f'<a href="/about/">{e(SITE["author"])}</a>{checked}</p>')
 
 
 def hero(page):
-    if page["path"] == "/":
-        latest = ACTIVE[0] if ACTIVE else None
-        latest_html = ""
-        if latest:
-            latest_html = (f'<div class="latest"><div class="latest-label">Newest code</div>'
-                           f'<div class="latest-code">{e(latest["code"])}</div>'
-                           f'<div class="reward">{e(reward_text(latest))}</div>{copy_button(latest["code"], "Copy code")}</div>')
-        return f"""<section class="hero">{PITCH_SVG}<div class="wrap">
-{byline(page)}
-<h1>Blue Lock Rivals Codes ({e(MONTH_YEAR)})</h1>
-<p class="lede">Every working code for Blue Lock: Rivals on Roblox, checked every 30 minutes. Redeem them for free Lucky Style Spins and Lucky Flow Spins.</p>
-<div class="scoreboard" role="group" aria-label="Code tracker summary">
-<div class="sb-bug" aria-hidden="true">BLR</div>
-<div class="sb-cells"><div class="sb-cell"><b>{len(ACTIVE)}</b><span>Working codes</span></div>
-<div class="sb-cell"><b>{TOTAL_SPINS}</b><span>Style spins</span></div>
-<div class="sb-cell"><b>{TOTAL_FLOWS}</b><span>Flow spins</span></div></div>
-<div class="sb-live"><span class="live-dot" aria-hidden="true"></span>Checked&nbsp;<time data-rel datetime="{e(CHECKED)}">today</time></div></div>
-{latest_html}</div></section>"""
-    return f"""<section class="hero page-hero">{PITCH_SVG}<div class="wrap">
-<nav class="crumbs" aria-label="Breadcrumb"><a href="/">Blue Lock Rivals Codes</a><span aria-hidden="true">/</span>{e(page['short'])}</nav>
-<h1>{e(page['h1'])}</h1><p class="lede">{page['lede']}</p>{byline(page)}</div></section>"""
+    crumbs = "" if page["path"] == "/" else (
+        f'<nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span>{e(page["short"])}</nav>')
+    h1 = f"Blue Lock Rivals Codes ({MONTH_YEAR})" if page["path"] == "/" else page["h1"]
+    lede = ("Every working code for Blue Lock: Rivals on Roblox, checked every 30 minutes."
+            if page["path"] == "/" else page["lede"])
+    return f'<div class="intro">{crumbs}<h1>{e(h1)}</h1><p class="lede">{lede}</p>{byline(page)}</div>'
 
 
 def render(page):
     body = page["body"]() if callable(page["body"]) else page["body"]
     body += related(page)
-    if page.get("sidebar", True):
-        grid = f'<div class="grid wrap"><main id="main">{body}</main>{sidebar(page)}</div>'
-    else:
-        grid = f'<div class="wrap" style="padding:30px 20px 64px"><main id="main">{body}</main></div>'
-    return with_base(head(page) + "<body>" + header(page) + hero(page) + grid + footer() + "</body></html>")
+    return with_base(head(page) + "<body>" + header(page)
+                     + f'<div class="wrap">{hero(page)}<main id="main">{body}</main></div>' + footer() + "</body></html>")
 
 
 # --------------------------------------------------------------------------- #
@@ -478,8 +442,7 @@ def home_body():
     return (toc([("codes", "Working codes"), ("redeem", "How to redeem"), ("not-working", "Code not working?"),
                  ("release", "When new codes drop"), ("expired", "Expired codes"), ("faq", "FAQ")])
             + block("codes", "New Blue Lock Rivals codes today",
-                    codes_answer() + f'<div class="actions">{copy_all_button()}<a class="btn" href="/how-to-redeem/">Redeem guide</a></div>'
-                    + tickets(ACTIVE))
+                    codes_answer() + tickets(ACTIVE) + f'<div class="actions">{copy_all_button()}</div>')
             + ad("in-content")
             + block("redeem", "How to redeem codes in Blue Lock Rivals",
                     redeem_steps() + '<p style="margin-top:16px">More detail, including where the Codes button is on mobile and console, is in the <a href="/how-to-redeem/">full redeem guide</a>.</p>')
@@ -496,10 +459,9 @@ def home_body():
                     + updates_timeline(3))
             + block("expired", "Expired Blue Lock Rivals codes",
                     f'<p>These {len(EXPIRED)} codes no longer work. They are listed so you don\'t waste time trying them.</p>'
-                    + expired_list(36)
+                    + expired_list(24)
                     + f'<details class="more"><summary>Show all {len(EXPIRED)} expired codes</summary>{expired_list()}</details>')
-            + block("guides", "Spend your spins well",
-                    '<p>Codes hand you spins. These guides help you decide what to keep.</p>' + guide_cards())
+            + block("guides", "Guides", guide_cards())
             + block("faq", "Blue Lock Rivals codes FAQ", faq_html(HOME_FAQ)))
 
 
@@ -703,7 +665,7 @@ def next_update_body():
                     '<div class="countdown" aria-live="polite"><div class="cd"><b data-d>-</b><span>Days</span></div>'
                     '<div class="cd"><b data-h>-</b><span>Hours</span></div><div class="cd"><b data-m>-</b><span>Minutes</span></div>'
                     '<div class="cd"><b data-s>-</b><span>Seconds</span></div></div>'
-                    '<p class="answer">The next Blue Lock Rivals update is expected on <strong data-local>Saturday at 10 AM Pacific time</strong>.</p></div>'
+                    '<p>The next Blue Lock Rivals update is expected on <strong data-local>Saturday at 10 AM Pacific time</strong>.</p></div>'
                     '<p class="muted">This is the usual weekly slot. The developer sometimes delays an update by a few hours or skips a week, and announces that in the official Discord.</p>')
             + block("time", "Blue Lock Rivals update time in your time zone",
                     '<p>Updates normally go live on Saturday at 10 AM Pacific time. Here is that time around the world:</p>' + ztable)
@@ -772,25 +734,25 @@ def privacy_body():
 CORE = ["/how-to-redeem/", "/codes-not-working/", "/free-spins/", "/tier-list/"]
 
 PAGES = [
-    dict(path="/", out="index.html", short="Working Codes",
+    dict(path="/", out="index.html", short="Working codes",
          title=f"Blue Lock Rivals Codes ({MONTH_YEAR}) – New Codes Today",
          description=f"All {len(ACTIVE)} working Blue Lock Rivals codes for {MONTH_YEAR}, checked every 30 minutes. Redeem them for free Lucky Style Spins and Lucky Flow Spins.",
          body=home_body, faq=HOME_FAQ, schema_type="WebPage", modified=NOW),
-    dict(path="/codes-not-working/", out="codes-not-working/index.html", short="Codes Not Working",
+    dict(path="/codes-not-working/", out="codes-not-working/index.html", short="Codes not working",
          title="Blue Lock Rivals Codes Not Working? 6 Fixes",
          h1="Blue Lock Rivals codes not working?",
          lede="Getting \"invalid\" or \"must be in group\"? Here's what causes each error and how to fix it in under a minute.",
          description="Getting 'invalid' or 'must be in group' errors? Here's why Blue Lock Rivals codes fail and how to fix each one in under a minute.",
          body=not_working_body, faq=NOT_WORKING_FAQ, blurb="Every error and its fix.",
          related=["/how-to-redeem/", "/", "/expired-codes/"]),
-    dict(path="/how-to-redeem/", out="how-to-redeem/index.html", short="How to Redeem",
+    dict(path="/how-to-redeem/", out="how-to-redeem/index.html", short="How to redeem",
          title=f"How to Redeem Blue Lock Rivals Codes ({YEAR} Guide)",
          h1="How to redeem Blue Lock Rivals codes",
          lede="Four quick steps, plus the group and level requirements that trip most players up.",
          description="How to redeem Blue Lock Rivals codes on PC, mobile and console, how to join the required Roblox group, and how to fix invalid code errors.",
          body=redeem_body, faq=REDEEM_FAQ, howto=True, blurb="Steps, the group requirement and fixes.",
          related=["/codes-not-working/", "/", "/free-spins/"]),
-    dict(path="/free-spins/", out="free-spins/index.html", short="Free Spins",
+    dict(path="/free-spins/", out="free-spins/index.html", short="Free spins",
          title="How to Get Free Lucky Spins in Blue Lock Rivals",
          h1="How to get free spins in Blue Lock Rivals",
          lede="Every free source of Lucky Style Spins and Flow Spins, how spin chances work, and how not to waste them.",
@@ -808,7 +770,7 @@ PAGES = [
          lede="What each flow does, how rare it is, and the best flow for your playstyle.",
          description=f"All {len(FLOWS['flows'])} Blue Lock Rivals flows with effects and rarities, the best flow for each playstyle, and how flow spins and pity work.",
          body=flows_body, blurb="Effects, rarities and best pairings.", related=["/tier-list/", "/styles/", "/free-spins/"]),
-    dict(path="/tier-list/", out="tier-list/index.html", short="Tier List",
+    dict(path="/tier-list/", out="tier-list/index.html", short="Tier list",
          title=f"Blue Lock Rivals Tier List ({MONTH_YEAR}): Best Styles",
          h1="Blue Lock Rivals tier list",
          lede="The best styles and flows in the current meta, ranked S to D, with picks for every budget.",
@@ -820,35 +782,35 @@ PAGES = [
          lede="Controls for PC, Xbox, PlayStation and mobile, plus the settings that make the biggest difference.",
          description="Blue Lock Rivals controls for PC, Xbox, PS5, PS4 and mobile, with keybinds for shooting, dribbling, tackling and flow, and the best settings.",
          body=controls_body, blurb="PC, console and mobile layouts.", related=["/beginners-guide/", "/tier-list/", "/"]),
-    dict(path="/beginners-guide/", out="beginners-guide/index.html", short="Beginner's Guide",
+    dict(path="/beginners-guide/", out="beginners-guide/index.html", short="Beginner's guide",
          title="How to Play Blue Lock Rivals: Beginner's Guide",
          h1="How to play Blue Lock Rivals",
          lede="What to do in your first hour, how to level up fast, and the fundamentals that win matches.",
          description="New to Blue Lock Rivals? How to play, level up fast, pick the right style and flow, and the fundamentals that win more matches.",
          body=beginners_body, blurb="First steps and core tips.", related=["/controls/", "/tier-list/", "/free-spins/"]),
-    dict(path="/next-update/", out="next-update/index.html", short="Next Update",
+    dict(path="/next-update/", out="next-update/index.html", short="Next update",
          title="Blue Lock Rivals Next Update: Countdown & Time",
          h1="Blue Lock Rivals next update",
          lede="A live countdown to the next weekly update, in your time zone.",
          description="When is the next Blue Lock Rivals update? Live countdown in your time zone, the usual release time, and the codes that drop with it.",
          body=next_update_body, blurb="Live countdown and release time.", related=["/updates/", "/", "/trello-discord/"]),
-    dict(path="/updates/", out="updates/index.html", short="Update Log",
+    dict(path="/updates/", out="updates/index.html", short="Update log",
          title="Blue Lock Rivals Update Log & Patch History",
          h1="Blue Lock Rivals update log", lede="Every recent update and the codes that came with it.",
          description="History of Blue Lock Rivals updates with release dates and the codes released with each one.",
          body=updates_body, blurb="Every update and its codes.", related=["/next-update/", "/", "/expired-codes/"]),
-    dict(path="/expired-codes/", out="expired-codes/index.html", short="Expired Codes",
+    dict(path="/expired-codes/", out="expired-codes/index.html", short="Expired codes",
          title=f"All Expired Blue Lock Rivals Codes ({len(EXPIRED)} Codes)",
          h1="Expired Blue Lock Rivals codes", lede="Every code that no longer works, so you can stop trying them.",
          description=f"The full list of {len(EXPIRED)} expired Blue Lock Rivals codes that no longer work, updated automatically.",
          body=expired_body, blurb="Codes that no longer work.", related=["/", "/codes-not-working/", "/next-update/"]),
-    dict(path="/trello-discord/", out="trello-discord/index.html", short="Discord & Trello",
+    dict(path="/trello-discord/", out="trello-discord/index.html", short="Discord and Trello",
          title="Blue Lock Rivals Discord, Trello & Wiki Links",
          h1="Blue Lock Rivals Discord, Trello and wiki",
          lede="The official places the developer posts updates and codes.",
          description="Official Blue Lock Rivals Discord server, Trello board, wiki pages and Roblox group, where updates and codes are announced.",
          body=links_body, blurb="Official Discord, Trello and group.", related=["/next-update/", "/", "/styles/"]),
-    dict(path="/guides/", out="guides/index.html", short="All Guides", title="Blue Lock Rivals Guides",
+    dict(path="/guides/", out="guides/index.html", short="All guides", title="Blue Lock Rivals Guides",
          h1="Blue Lock Rivals guides", lede="Everything beyond codes: styles, flows, controls and more.",
          description="All Blue Lock Rivals guides: styles, flows, tier list, controls, free spins, next update and beginner tips.",
          body=guides_body),
@@ -856,7 +818,7 @@ PAGES = [
          h1="About this site", lede="Who runs it and how codes are checked.",
          description="Who runs Blue Lock Rivals Codes and how new codes are found and verified.", body=about_body,
          schema_type="AboutPage"),
-    dict(path="/privacy-policy.html", out="privacy-policy.html", short="Privacy Policy", title="Privacy Policy",
+    dict(path="/privacy-policy.html", out="privacy-policy.html", short="Privacy policy", title="Privacy Policy",
          h1="Privacy policy", lede="Short version: we don't collect personal data.",
          description=f"Privacy policy for {SITE['domain']}.", body=privacy_body, sidebar=False),
 ]
@@ -904,37 +866,20 @@ def make_images():
     bold = FONTS / "BarlowCondensed-ExtraBoldItalic.ttf"
     semi = FONTS / "BarlowCondensed-Bold.ttf"
     F = lambda path, size: ImageFont.truetype(str(path), size)
-    navy, ego, volt, floodlight, turf, line = "#0A1633", "#1B4DFF", "#C6F432", "#F3F6FB", "#E9EFF8", "#C4D2EC"
+    ink, accent, muted, line = "#16202E", "#1D5BF0", "#667085", "#E4E8EF"
     W, H = 1200, 630
-    im = Image.new("RGB", (W, H), floodlight)
+    im = Image.new("RGB", (W, H), "white")
     d = ImageDraw.Draw(im)
-    for x in range(0, W, 160):
-        d.rectangle([x + 80, 0, x + 160, H], fill=turf)
-    d.rectangle([30, 30, W - 30, H - 30], outline=line, width=3)
-    d.line([(W * 0.72, 30), (W * 0.72, H - 30)], fill=line, width=3)
-    d.ellipse([W * 0.72 - 95, H / 2 - 95, W * 0.72 + 95, H / 2 + 95], outline=line, width=3)
-    d.rectangle([0, 0, W, 10], fill=ego)
-    d.rectangle([int(W * .7), 0, int(W * .85), 10], fill=volt)
-    d.text((72, 70), "BLUE LOCK RIVALS", font=F(bold, 104), fill=navy)
-    d.text((72, 172), "CODES", font=F(bold, 150), fill=ego)
-    d.text((76, 340), MONTH_YEAR.upper(), font=F(semi, 54), fill=navy)
-    # scoreboard
-    y = 440
-    d.polygon([(72, y), (300, y), (284, y + 92), (72, y + 92)], fill=ego)
-    d.text((104, y + 16), "BLR", font=F(bold, 62), fill="white")
-    d.polygon([(294, y), (1000, y), (984, y + 92), (278, y + 92)], fill=navy)
-    cells = [(str(len(ACTIVE)), "CODES"), (str(TOTAL_SPINS), "STYLE SPINS"), (str(TOTAL_FLOWS), "FLOW SPINS")]
-    x = 330
-    for num, label in cells:
-        d.text((x, y + 12), num, font=F(bold, 64), fill="white")
-        nw = d.textlength(num, font=F(bold, 64))
-        d.text((x + nw + 12, y + 40), label, font=F(semi, 28), fill="#B9C4DD")
-        x += nw + 12 + d.textlength(label, font=F(semi, 28)) + 46
-    d.polygon([(994, y), (1130, y), (1130, y + 92), (978, y + 92)], fill=volt)
-    d.text((1010, y + 26), "LIVE", font=F(bold, 44), fill=navy)
+    d.rectangle([0, 0, W, 12], fill=accent)
+    d.text((80, 96), "Blue Lock Rivals", font=F(semi, 64), fill=muted)
+    d.text((80, 168), "CODES", font=F(bold, 170), fill=ink)
+    d.text((84, 360), MONTH_YEAR, font=F(semi, 56), fill=accent)
+    d.line([(80, 456), (W - 80, 456)], fill=line, width=2)
+    summary = f"{len(ACTIVE)} working codes  ·  {TOTAL_SPINS} style spins  ·  {TOTAL_FLOWS} flow spins"
+    d.text((80, 486), summary, font=F(semi, 44), fill=ink)
     im.save(DIST / "og.png", optimize=True)
 
-    icon = Image.new("RGB", (180, 180), ego)
+    icon = Image.new("RGB", (180, 180), "#1D5BF0")
     di = ImageDraw.Draw(icon)
     di.ellipse([42, 42, 138, 138], outline="white", width=10)
     di.polygon([(90, 64), (112, 80), (104, 106), (76, 106), (68, 80)], fill="white")
