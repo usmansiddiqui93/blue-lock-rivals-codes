@@ -50,7 +50,7 @@ jobs:
         if: github.event_name != 'push'
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
-          BASE_PATH: ${{ steps.pages.outputs.base_path }}
+          BASE_PATH: ""   # site lives at https://blue-lock-rivals-codes.com (custom domain)
         run: |
           python scripts/update_codes.py ${{ inputs.force && '--force' || '' }}
 
@@ -67,7 +67,7 @@ jobs:
 
       - name: Build site
         env:
-          BASE_PATH: ${{ steps.pages.outputs.base_path }}
+          BASE_PATH: ""   # site lives at https://blue-lock-rivals-codes.com (custom domain)
         run: |
           git pull --ff-only || true
           export LAST_CHECKED="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
