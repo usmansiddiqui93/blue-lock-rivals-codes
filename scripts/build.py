@@ -276,19 +276,19 @@ def sidebar(page):
     guides = "".join(f'<li><a href="{e(p["path"])}">{e(p["short"])}</a></li>'
                      for p in PAGES if p.get("blurb") and p["path"] != page["path"])
     return f"""<aside>
-<div class="panel"><h2>Code tracker</h2>
+<div class="panel"><h3>Code tracker</h3>
 <p class="status">Last checked <b><time data-rel datetime="{e(CHECKED)}">{e(nice_date(CHECKED))}</time></b></p>
 <p class="status"><b>{len(ACTIVE)}</b> working and <b>{len(EXPIRED)}</b> expired codes tracked. The list is rechecked every 30 minutes.</p>
 <p class="status"><a href="/next-update/">Next update countdown</a></p></div>
 {ad("sidebar")}
-<div class="panel"><h2>Quick tips</h2><ul class="tips">
+<div class="panel"><h3>Quick tips</h3><ul class="tips">
 <li><strong>Redeem fast.</strong> Codes can stop working within days.</li>
 <li><strong>Copy, don't type.</strong> Codes are case-sensitive.</li>
 <li><strong>They stack.</strong> Every working code redeems on the same account.</li>
 <li><strong>Check on Saturdays.</strong> Most updates and codes land then.</li></ul></div>
-<div class="panel"><h2>Guides</h2><ul class="linklist">{guides}</ul></div>
+<div class="panel"><h3>Guides</h3><ul class="linklist">{guides}</ul></div>
 <div class="panel"><div class="author"><div class="avatar">{avatar}</div><div>
-<strong>{e(a)}</strong><span class="muted">{e(SITE['author_role'])}</span></div></div>
+<strong>{e(a)}</strong><span class="muted role">{e(SITE['author_role'])}</span></div></div>
 <p class="status" style="margin-top:12px">New codes are published only after two independent sources confirm them. <a href="/about/">How we check codes</a></p></div>
 </aside>"""
 
@@ -405,8 +405,12 @@ def hero(page):
 def render(page):
     body = page["body"]() if callable(page["body"]) else page["body"]
     body += related(page)
-    return with_base(head(page) + "<body>" + header(page)
-                     + f'<div class="wrap">{hero(page)}<main id="main">{body}</main></div>' + footer() + "</body></html>")
+    intro = f'<section class="intro-band"><div class="wrap">{hero(page)}</div></section>'
+    if page.get("sidebar", True):
+        layout = f'<div class="wrap layout"><main id="main">{body}</main>{sidebar(page)}</div>'
+    else:
+        layout = f'<div class="wrap layout single"><main id="main">{body}</main></div>'
+    return with_base(head(page) + "<body>" + header(page) + intro + layout + footer() + "</body></html>")
 
 
 # --------------------------------------------------------------------------- #
