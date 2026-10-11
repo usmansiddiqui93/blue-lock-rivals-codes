@@ -1,39 +1,23 @@
 {
- "updated": "2026-10-09T02:55:21Z",
+ "updated": "2026-10-11T08:43:02Z",
  "last_checked": "2026-10-09T00:00:00Z",
- "active": [
+ "active": [],
+ "expired": [
   {
-   "code": "DONREVAMP",
-   "reward": "5 Lucky Style Spins + 5 Lucky Flow Spins",
-   "spins": 5,
-   "flows": 5,
+   "code": "ACEEATER",
    "added": "2026-10-04",
-   "sources": [
-    "seed"
-   ]
+   "expired": "2026-10-11"
   },
   {
    "code": "SENDOUNEXT",
-   "reward": "5 Lucky Flow Spins",
-   "spins": 0,
-   "flows": 5,
    "added": "2026-10-04",
-   "sources": [
-    "seed"
-   ]
+   "expired": "2026-10-11"
   },
   {
-   "code": "ACEEATER",
-   "reward": "5 Lucky Style Spins",
-   "spins": 5,
-   "flows": 0,
+   "code": "DONREVAMP",
    "added": "2026-10-04",
-   "sources": [
-    "seed"
-   ]
-  }
- ],
- "expired": [
+   "expired": "2026-10-11"
+  },
   {
    "code": "SNUFFYUPD"
   },
