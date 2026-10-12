@@ -1,4 +1,7 @@
 (function () {
+  // Translations are injected per language as window.I18N; English is the fallback.
+  var T = function (k) { return (window.I18N && window.I18N[k]) || k; };
+  var LANG = document.documentElement.lang || undefined;
   var toast = document.createElement("div");
   toast.className = "toast";
   document.body.appendChild(toast);
@@ -27,13 +30,13 @@
       copy(b.getAttribute("data-copy")).then(function () {
         var lbl = b.querySelector(".cb-copy-txt");
         if (lbl) {
-          lbl.textContent = "Copied"; b.classList.add("done");
-          setTimeout(function () { lbl.textContent = "Copy"; b.classList.remove("done"); }, 1400);
+          lbl.textContent = T("Copied"); b.classList.add("done");
+          setTimeout(function () { lbl.textContent = T("Copy"); b.classList.remove("done"); }, 1400);
         } else if (b.classList.contains("copy")) {
-          var old = b.textContent; b.textContent = "Copied"; b.classList.add("done");
+          var old = b.textContent; b.textContent = T("Copied"); b.classList.add("done");
           setTimeout(function () { b.textContent = old; b.classList.remove("done"); }, 1400);
         }
-        say(b.hasAttribute("data-copy-all") ? "All active codes copied" : "Copied " + b.getAttribute("data-copy"));
+        say(b.hasAttribute("data-copy-all") ? T("All active codes copied") : T("Copied") + " " + b.getAttribute("data-copy"));
       });
       return;
     }
@@ -46,7 +49,7 @@
     var s = e.target.closest("[data-share]");
     if (s) {
       if (navigator.share) navigator.share({ title: document.title, url: location.href }).catch(function () {});
-      else copy(location.href).then(function () { say("Link copied"); });
+      else copy(location.href).then(function () { say(T("Link copied")); });
     }
   });
   // Next-update countdown: next <weekday> at <hour>:00 Pacific time, shown in the visitor's zone.
@@ -78,10 +81,10 @@
       var fmt = function (tz) {
         var o = { weekday: "long", hour: "numeric", minute: "2-digit", timeZoneName: "short" };
         if (tz) o.timeZone = tz;
-        return target.toLocaleString(undefined, o);
+        return target.toLocaleString(LANG, o);
       };
       var local = cdRoot.querySelector("[data-local]");
-      if (local) local.textContent = fmt() + " (your time)";
+      if (local) local.textContent = fmt() + " " + T("(your time)");
       document.querySelectorAll("[data-zone]").forEach(function (td) {
         try { td.textContent = fmt(td.getAttribute("data-zone")); } catch (err) {}
       });
@@ -102,7 +105,7 @@
   if (q) {
     var box = q.parentNode.querySelector(".search-results");
     var items = [].slice.call(box.querySelectorAll("li"));
-    var none = document.createElement("li"); none.className = "none"; none.textContent = "No matches. Try \"codes\", \"tier\" or \"spins\".";
+    var none = document.createElement("li"); none.className = "none"; none.textContent = T("No matches. Try another word.");
     var idx = -1;
     var visible = function () { return items.filter(function (li) { return li.classList.contains("show"); }); };
     var mark = function () {
@@ -147,9 +150,9 @@
       var msg = f.querySelector(".af-msg"), btn = f.querySelector("button"), input = f.querySelector("input[type=email]");
       var say2 = function (t, ok) { msg.textContent = t; msg.className = "af-msg " + (ok ? "ok" : "err"); };
       var email = input.value.trim();
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { say2("Please enter a valid email address.", false); input.focus(); return; }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { say2(T("Please enter a valid email address."), false); input.focus(); return; }
       var ep = f.getAttribute("data-endpoint");
-      if (!ep) { say2("Email alerts are launching very soon. Please check back shortly.", false); return; }
+      if (!ep) { say2(T("Email alerts are launching very soon. Please check back shortly."), false); return; }
       btn.disabled = true;
       fetch(ep.replace(/\/$/, "") + "/subscribe", {
         method: "POST", headers: { "Content-Type": "application/json" },
@@ -157,12 +160,12 @@
       }).then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { return { r: r, j: j }; }); })
         .then(function (x) {
           if (x.r.ok && x.j.ok) {
-            say2(x.j.already ? "You're already subscribed. New codes will come straight to your inbox."
-                             : "Almost done! Check your inbox and click the link to confirm.", true);
+            say2(x.j.already ? T("You're already subscribed. New codes will come straight to your inbox.")
+                             : T("Almost done! Check your inbox and click the link to confirm."), true);
             input.value = "";
-          } else { say2(x.j.error || "Something went wrong. Please try again.", false); }
+          } else { say2(x.j.error || T("Something went wrong. Please try again."), false); }
         })
-        .catch(function () { say2("Couldn't reach the server. Check your connection and try again.", false); })
+        .catch(function () { say2(T("Couldn't reach the server. Check your connection and try again."), false); })
         .then(function () { btn.disabled = false; });
     });
   });
@@ -184,7 +187,7 @@
       });
     };
     if (!supported) {
-      if (ios && !standalone) setAll("Browser notifications", "On iPhone/iPad: tap Share, then Add to Home Screen, open the site from there and turn notifications on.", false, true);
+      if (ios && !standalone) setAll(T("Browser notifications"), T("On iPhone/iPad: tap Share, then Add to Home Screen, open the site from there and turn notifications on."), false, true);
       return; // other unsupported browsers: keep the option hidden
     }
     var b64ToBytes = function (b64) {
@@ -202,25 +205,25 @@
     };
     var refresh = function () {
       permission().then(function (perm) {
-        if (perm === "denied") { setAll("Notifications blocked", "Notifications are blocked for this site. Allow them in your browser's site settings to turn them on.", false, true); return; }
+        if (perm === "denied") { setAll(T("Notifications blocked"), T("Notifications are blocked for this site. Allow them in your browser's site settings to turn them on."), false, true); return; }
         (reg ? reg.pushManager.getSubscription() : Promise.resolve(null)).then(function (sub) {
-          if (sub) setAll("Browser notifications are on", "Tap to turn them off.", true, false);
-          else setAll("Turn on browser notifications", "", false, false);
+          if (sub) setAll(T("Browser notifications are on"), T("Tap to turn them off."), true, false);
+          else setAll(T("Turn on browser notifications"), "", false, false);
         });
       });
     };
     navigator.serviceWorker.register(base + "/sw.js", { scope: base + "/" }).then(function (r) { reg = r; refresh(); })
-      .catch(function () { setAll("Turn on browser notifications", "", false, false); });
+      .catch(function () { setAll(T("Turn on browser notifications"), "", false, false); });
     boxes.forEach(function (b) {
       b.querySelector(".push-btn").addEventListener("click", function () {
-        if (!ep) { setAll("Turn on browser notifications", "Browser notifications are launching very soon. Please check back shortly.", false, false); return; }
+        if (!ep) { setAll(T("Turn on browser notifications"), T("Browser notifications are launching very soon. Please check back shortly."), false, false); return; }
         if (!reg) return;
-        setAll("Working…", "", false, true);
+        setAll(T("Working…"), "", false, true);
         reg.pushManager.getSubscription().then(function (sub) {
           if (sub) { // turn off
             return fetch(ep + "/push-unsubscribe", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ endpoint: sub.endpoint }) })
               .catch(function () {}).then(function () { return sub.unsubscribe(); })
-              .then(function () { setAll("Turn on browser notifications", "Browser notifications are off.", false, false); });
+              .then(function () { setAll(T("Turn on browser notifications"), T("Browser notifications are off."), false, false); });
           }
           return Notification.requestPermission().then(function (perm) {
             if (perm !== "granted") { refresh(); return; }
@@ -228,10 +231,10 @@
               return reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64ToBytes(k.publicKey) });
             }).then(function (newSub) {
               return fetch(ep + "/push-subscribe", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subscription: newSub.toJSON() }) })
-                .then(function (r) { return r.json().then(function (j) { if (!r.ok || !j.ok) { newSub.unsubscribe(); throw new Error(j.error || "Could not turn on notifications."); } }); });
-            }).then(function () { setAll("Browser notifications are on", "Done! You'll get a test notification now, then one for every new code.", true, false); });
+                .then(function (r) { return r.json().then(function (j) { if (!r.ok || !j.ok) { newSub.unsubscribe(); throw new Error(j.error || T("Could not turn on notifications.")); } }); });
+            }).then(function () { setAll(T("Browser notifications are on"), T("Done! You'll get a test notification now, then one for every new code."), true, false); });
           });
-        }).catch(function (err) { setAll("Turn on browser notifications", (err && err.message) || "Something went wrong. Please try again.", false, false); });
+        }).catch(function (err) { setAll(T("Turn on browser notifications"), (err && err.message) || T("Something went wrong. Please try again."), false, false); });
       });
     });
   })();
@@ -240,8 +243,8 @@
     var d = new Date(t.getAttribute("datetime"));
     if (isNaN(d)) return;
     var mins = Math.round((Date.now() - d.getTime()) / 60000);
-    var txt = mins < 1 ? "just now" : mins < 60 ? mins + " min ago" : mins < 1440 ? Math.round(mins / 60) + " h ago" : Math.round(mins / 1440) + " days ago";
+    var txt = mins < 1 ? T("just now") : mins < 60 ? T("{0} min ago").replace("{0}", mins) : mins < 1440 ? T("{0} h ago").replace("{0}", Math.round(mins / 60)) : T("{0} days ago").replace("{0}", Math.round(mins / 1440));
     t.textContent = txt;
-    t.title = d.toLocaleString();
+    t.title = d.toLocaleString(LANG);
   });
 })();

@@ -18,6 +18,10 @@ from datetime import datetime, timezone, date
 from email.utils import format_datetime
 from pathlib import Path
 
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import i18n  # noqa: E402
+
 ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "data"
 ASSETS = ROOT / "assets"
@@ -65,12 +69,13 @@ def parse_dt(s):
 def nice_date(d):
     if isinstance(d, str):
         d = parse_dt(d) if "T" in d else datetime.fromisoformat(d)
-    return d.strftime("%B %-d, %Y")
+    return f"⟦D:{d.strftime('%Y-%m-%d')}⟧"
 
 
 UPDATED = parse_dt(CODES.get("updated", NOW.isoformat()))
 CHECKED = CODES.get("last_checked") or CODES.get("updated") or NOW.isoformat()
-MONTH_YEAR = NOW.strftime("%B %Y")
+MONTH_YEAR = f"⟦M:{NOW.strftime('%Y-%m')}⟧"   # localized per language
+MONTH_YEAR_EN = NOW.strftime("%B %Y")
 YEAR = NOW.year
 ACTIVE = CODES.get("active", [])
 EXPIRED = CODES.get("expired", [])
@@ -489,6 +494,7 @@ def header(page):
 <a class="round" href="/alerts/" title="Get new code alerts">{icon("bell", 22)}<span class="sr">Get new code alerts</span></a>
 <a class="play" href="{e(SITE['roblox_url'])}" target="_blank" rel="noopener"><span class="round">{icon("play", 22)}</span><span class="play-txt"><b>Play</b><b>on Roblox</b></span></a>
 </div>
+<details class="langsw" id="langsw"></details>
 <button class="menu-btn" type="button" aria-expanded="false" aria-controls="nav">Menu</button></div>
 <div class="navrow"><nav class="nav wrap" id="nav" aria-label="Main">{nav}{cta}</nav></div></header>"""
 
@@ -1026,8 +1032,24 @@ def sitemap():
     urls = []
     for p in [x for x in PAGES if not x.get("noindex")]:
         mod = (p.get("modified") or UPDATED).date().isoformat()
-        urls.append(f"<url><loc>{e(ABS + p['path'])}</loc><lastmod>{mod}</lastmod></url>")
-    return f'<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{"".join(urls)}</urlset>'
+        alts = "".join(f'<xhtml:link rel="alternate" hreflang="{hl}" href="{e(ABS + i18n.lang_path(code, p["path"]))}"/>'
+                       for code, (_, hl, _, _) in i18n.LANGS.items())
+        alts += f'<xhtml:link rel="alternate" hreflang="x-default" href="{e(ABS + p["path"])}"/>'
+        for code in i18n.LANGS:
+            urls.append(f"<url><loc>{e(ABS + i18n.lang_path(code, p['path']))}</loc><lastmod>{mod}</lastmod>{alts}</url>")
+    return ('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" '
+            f'xmlns:xhtml="http://www.w3.org/1999/xhtml">{"".join(urls)}</urlset>')
+
+
+def protected_names():
+    """Proper nouns and codes that must never be translated (become {n} placeholders)."""
+    names = {c["code"] for c in ACTIVE + EXPIRED}
+    for v in STYLES["rarities"].values():
+        names.update(v)
+    names.update(f["name"] for f in FLOWS["flows"])
+    names.update(u["name"] for u in UPDATES["updates"])
+    names.update([SITE["author"], SITE["developer"], SITE["contact_email"], SITE["domain"]])
+    return names
 
 
 def feed():
@@ -1068,7 +1090,7 @@ def make_images():
     d = ImageDraw.Draw(im)
     d.text((80, 92), "BLUE LOCK RIVALS", font=F(bold, 92), fill="white")
     d.text((80, 186), "CODES", font=F(bold, 190), fill="#FF6A1A")
-    d.text((86, 410), MONTH_YEAR.upper(), font=F(semi, 54), fill="#C9CBD6")
+    d.text((86, 410), MONTH_YEAR_EN.upper(), font=F(semi, 54), fill="#C9CBD6")
     y = 500
     d.rounded_rectangle([80, y, 80 + 380, y + 74], radius=14, fill="#E8263F")
     d.text((104, y + 12), f"+{TOTAL_SPINS} STYLE SPINS", font=F(bold, 46), fill="white")
@@ -1103,11 +1125,19 @@ def build():
         if f.is_file():
             target = DIST / f"assets/{f.name}"
             shutil.copy2(f, target)
+    seg = i18n.Segmenter(protected_names())
+    tables = {code: i18n.load_table(code) for code in i18n.LANGS}
+    missing = {code: set() for code in i18n.LANGS}
     for p in PAGES:
-        out = DIST / p["out"]
-        out.parent.mkdir(parents=True, exist_ok=True)
-        out.write_text(render(p), encoding="utf-8")
-    (DIST / "404.html").write_text(not_found(), encoding="utf-8")
+        english = render(p)
+        for code in i18n.LANGS:
+            out = DIST / (i18n.LANGS[code][0]) / p["out"] if code != "en" else DIST / p["out"]
+            out.parent.mkdir(parents=True, exist_ok=True)
+            out.write_text(i18n.localize(english, p["path"], code, tables[code], seg, ABS, missing[code]), encoding="utf-8")
+    (DIST / "404.html").write_text(i18n.localize(not_found(), "/404.html", "en", {}, seg, ABS), encoding="utf-8")
+    gaps = {c: len(m) for c, m in missing.items() if c != "en" and m}
+    if gaps:
+        print("  untranslated segments (shown in English):", gaps)
     (DIST / "sitemap.xml").write_text(sitemap(), encoding="utf-8")
     (DIST / "feed.xml").write_text(feed(), encoding="utf-8")
     (DIST / "favicon.svg").write_text(FAVICON, encoding="utf-8")
@@ -1131,8 +1161,26 @@ def build():
                                                  "expired": [c["code"] for c in EXPIRED]}, ensure_ascii=False, indent=1), encoding="utf-8")
     shutil.copy2(ASSETS / "sw.js", DIST / "sw.js")
     make_images()
-    print(f"Built {len(PAGES) + 1} pages -> dist/  ({len(ACTIVE)} active, {len(EXPIRED)} expired){'  [preview: ' + BASE + ']' if PREVIEW else ''}")
+    print(f"Built {len(PAGES) * len(i18n.LANGS) + 1} pages in {len(i18n.LANGS)} languages -> dist/  ({len(ACTIVE)} active, {len(EXPIRED)} expired){'  [preview: ' + BASE + ']' if PREVIEW else ''}")
+
+
+def extract():
+    """Write data/i18n/source.json: every English template that needs a translation."""
+    seg = i18n.Segmenter(protected_names())
+    src = {}
+    for p in PAGES:
+        page = i18n.Page(render(p), seg)
+        for kind, _, t, _ in page.units():
+            src.setdefault(t, set()).add(p["path"])
+        for t in page.ld_strings():
+            src.setdefault(t, set()).add(p["path"])
+    for t in i18n.JS_STRINGS:
+        src.setdefault("js:" + t, set()).add("(script)")
+    i18n.I18N_DIR.mkdir(parents=True, exist_ok=True)
+    out = {k: sorted(v) for k, v in sorted(src.items(), key=lambda kv: (sorted(kv[1])[0], kv[0]))}
+    (i18n.I18N_DIR / "source.json").write_text(json.dumps(out, ensure_ascii=False, indent=1), encoding="utf-8")
+    print(f"{len(out)} strings -> data/i18n/source.json")
 
 
 if __name__ == "__main__":
-    build()
+    extract() if "--extract" in sys.argv else build()

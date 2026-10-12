@@ -34,7 +34,7 @@ jobs:
           python-version: "3.12"
 
       - name: Install image library (share image + icons)
-        run: pip install --quiet pillow
+        run: pip install --quiet pillow beautifulsoup4
 
       - name: Run tests
         run: python tests/test_updater.py
