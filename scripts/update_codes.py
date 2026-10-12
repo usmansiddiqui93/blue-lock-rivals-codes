@@ -161,6 +161,15 @@ def parse_reward(text: str) -> tuple[int, int]:
     return spins, flows
 
 
+# Badges trackers put next to codes ("NEW", "(new!)", "HOT", a "Copy" button label).
+# Stripped before parsing so "EPICSENDOU NEW" in a table cell still reads as EPICSENDOU.
+BADGE_RE = re.compile(r"(?<![A-Za-z0-9])(?:\(new!?\)|NEW!?|New!?|HOT|Hot|Copy|Copied|Verified)(?![A-Za-z0-9!])")
+
+
+def strip_badges(text: str) -> str:
+    return re.sub(r"\s{2,}", " ", BADGE_RE.sub("", text)).strip()
+
+
 def extract(html_text: str) -> dict:
     """Return {"active": {KEY: {"code","reward"}}, "expired": {KEY: code}}."""
     p = Blocks()
@@ -180,6 +189,7 @@ def extract(html_text: str) -> dict:
             continue
         if mode is None or kind not in ("item", "row", "text") or len(text) > 160:
             continue
+        text = " | ".join(strip_badges(c) for c in text.split(" | ")) if kind == "row" else strip_badges(text)
         if kind == "row":
             cells = [c.strip(" `*") for c in text.split(" | ")]
             if cells and cells[0].isdigit():

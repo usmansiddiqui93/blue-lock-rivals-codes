@@ -3,7 +3,11 @@
   {
    "date": "2026-10-10",
    "name": "Sendou",
-   "codes": []
+   "codes": [
+    "EPICSENDOU",
+    "ONEMOREWEEK",
+    "NELAIKUNEXT"
+   ]
   },
   {
    "date": "2026-10-03",

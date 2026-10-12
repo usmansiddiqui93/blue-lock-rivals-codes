@@ -35,6 +35,22 @@ class Extract(unittest.TestCase):
         html = "<h2>Active codes</h2><table><tr><td>1</td><td>2BVISITS!</td><td>5 Lucky Spins</td></tr></table>"
         self.assertEqual(set(u.extract(html)["active"]), {"2BVISITS!"})
 
+    def test_new_badges_next_to_codes(self):
+        # Dexerto-style table with a NEW badge in the code cell (missed on 10 Oct 2026)
+        table = ("<h2>Active BLR codes</h2><table><tr><th>Code</th><th>Reward</th><th>Expiry Date</th></tr>"
+                 "<tr><td><strong>EPICSENDOU</strong> <span>NEW</span></td><td>7 Lucky Spins</td><td></td></tr>"
+                 "<tr><td>NELAIKUNEXT NEW</td><td>5 Lucky Spins and 5 Lucky Flows</td><td></td></tr></table>")
+        self.assertEqual(set(u.extract(table)["active"]), {"EPICSENDOU", "NELAIKUNEXT"})
+        # Beebom/Pocket Tactics-style list items with badges and a Copy button label
+        lst = ("<h2>All New Blue Lock Rivals Codes</h2><ul>"
+               "<li><strong>ONEMOREWEEK</strong> - 5 Lucky Flows NEW Copy</li>"
+               "<li><strong>EPICSENDOU</strong> - 7 Lucky Spins (new!)</li></ul>")
+        r = u.extract(lst)["active"]
+        self.assertEqual(set(r), {"ONEMOREWEEK", "EPICSENDOU"})
+        self.assertEqual(u.parse_reward(r["EPICSENDOU"]["reward"]), (7, 0))
+        # Codes that merely contain NEW/HOT stay intact
+        self.assertIn("NEWMAP", u.extract("<h2>Expired codes</h2><ul><li>NEWMAP</li><li>HOTSHOT</li></ul>")["expired"])
+
     def test_reward_parse(self):
         self.assertEqual(u.parse_reward("five lucky style spins and five lucky flow spins"), (5, 5))
         self.assertEqual(u.parse_reward("5 Lucky Flows"), (0, 5))
