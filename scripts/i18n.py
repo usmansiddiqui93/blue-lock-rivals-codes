@@ -383,6 +383,8 @@ def localize(html_text, page_path, lang, table, seg, abs_base, missing=None):
     alt = "".join(f'\n<link rel="alternate" hreflang="{hl}" href="{abs_base + lang_path(code, page_path)}">'
                   for code, (pfx, hl, _, _) in LANGS.items())
     alt += f'\n<link rel="alternate" hreflang="x-default" href="{abs_base + page_path}">'
+    if page_path == "/404.html":
+        alt = ""   # the error page exists in English only
     font = {"fa": "Vazirmatn:wght@400;600;700;800", "hi": "Noto+Sans+Devanagari:wght@400;600;700;800"}.get(lang)
     if font:
         head.append(soup.new_tag("link", rel="stylesheet",
