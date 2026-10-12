@@ -378,10 +378,11 @@ def localize(html_text, page_path, lang, table, seg, abs_base, missing=None):
     if direction == "rtl":
         soup.html["dir"] = "rtl"
     head = soup.head
-    for code, (pfx, hl, _, _) in LANGS.items():
-        link = soup.new_tag("link", rel="alternate", hreflang=hl, href=abs_base + lang_path(code, page_path))
-        head.append(link)
-    head.append(soup.new_tag("link", rel="alternate", hreflang="x-default", href=abs_base + page_path))
+    # hreflang alternates are inserted as text right after the canonical tag (see end),
+    # in the conventional rel / hreflang / href order that SEO checkers look for.
+    alt = "".join(f'\n<link rel="alternate" hreflang="{hl}" href="{abs_base + lang_path(code, page_path)}">'
+                  for code, (pfx, hl, _, _) in LANGS.items())
+    alt += f'\n<link rel="alternate" hreflang="x-default" href="{abs_base + page_path}">'
     font = {"fa": "Vazirmatn:wght@400;600;700;800", "hi": "Noto+Sans+Devanagari:wght@400;600;700;800"}.get(lang)
     if font:
         head.append(soup.new_tag("link", rel="stylesheet",
@@ -403,7 +404,11 @@ def localize(html_text, page_path, lang, table, seg, abs_base, missing=None):
             f'<summary aria-label="Language">{(prefix or "en").upper()}</summary><ul>{"".join(items)}</ul>',
             "html.parser"))
 
-    return localize_markers(str(soup), lang)
+    out = re.sub(r'<link href="([^"]+)" rel="canonical"/>', r'<link rel="canonical" href="\1">', str(soup))
+    m = re.search(r'<link[^>]*rel="canonical"[^>]*>', out)
+    at = m.end() if m else out.index("</head>")
+    out = out[:at] + alt + out[at:]
+    return localize_markers(out, lang)
 
 
 # ---------------------------------------------------------------------------
