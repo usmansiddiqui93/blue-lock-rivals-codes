@@ -648,29 +648,85 @@ def redeem_body():
             + block("faq", "Troubleshooting", faq_html(REDEEM_FAQ)))
 
 
+SPINS_FAQ = [
+    ("How many free spins can I get from codes?",
+     "It changes as codes are added and expire. This page totals the working codes automatically, so the numbers at the top are always current."),
+    ("Can you get Lucky Spins without codes?",
+     "Yes, but more slowly. AFK rewards, some quests and seasonal events have all handed out Lucky Spins. Codes are still the quickest free source."),
+    ("Can you buy Lucky Spins with Yen?",
+     "No. Yen only buys normal spins. Lucky Spins come from codes, rewards and events, or from the Robux shop."),
+    ("Is there a spin pity in Blue Lock Rivals?",
+     "Flows have one: after 50 Flow spins without a Legendary, the next one is guaranteed to be Legendary or better."),
+    ("Do infinite spin scripts work?",
+     "No. Spin scripts, glitches and generators break Roblox rules, can get your account banned and are often built to steal accounts."),
+]
+
+
+def spin_codes_table():
+    rows = [c for c in ACTIVE if c.get("spins") or c.get("flows")]
+    if not rows:
+        return ('<p>No working codes give spins right now. New codes usually arrive with the weekly update, so check the '
+                '<a href="/next-update/">update countdown</a> or <a href="/alerts/">get an alert</a> when one drops.</p>')
+    items = "".join(f'<li>{code_box(c["code"])}<span class="sc-reward">{e(reward_text(c))}</span></li>' for c in rows)
+    return ('<ul class="spin-codes">' + items + '</ul>'
+            + '<p class="muted">Copy a code, then redeem it in the Codes menu in the lobby. You need to be in the Roblox group and at level 10. '
+              '<a href="/how-to-redeem/">See how to redeem</a>.</p>')
+
+
 def spins_body():
-    return (toc([("ways", "Every free source"), ("lucky", "Lucky vs normal"), ("chances", "Chances and pity"),
-                 ("level", "Level up faster"), ("before", "Before you spin"), ("scripts", "Spin scripts")])
+    n = len([c for c in ACTIVE if c.get("spins") or c.get("flows")])
+    answer = (f'<p class="answer"><strong>The quickest free spins come from codes.</strong> Right now {n} working {"code gives" if n == 1 else "codes give"} '
+              f'<strong>{TOTAL_SPINS} Lucky Style Spins and {TOTAL_FLOWS} Lucky Flow Spins</strong>. After that, you can earn spins '
+              'by playing matches for Yen, collecting AFK rewards, finishing quests and joining seasonal events.</p>') if n else (
+              '<p class="answer"><strong>No codes give spins right now</strong>, so earn them by playing matches for Yen, collecting AFK '
+              'rewards, finishing quests and joining seasonal events. New codes usually arrive with the weekly update.</p>')
+    return (answer
+            + block("codes", "Free spins from codes right now", spin_codes_table())
             + block("ways", "Every way to get free spins in Blue Lock Rivals",
-                    f'<div class="prose"><h3>Redeem codes</h3><p>The fastest source. Each new code usually gives 5 Lucky Style Spins, 5 Lucky Flow Spins, or both. Right now the <a href="/">working codes</a> add up to <strong>{TOTAL_SPINS} style spins and {TOTAL_FLOWS} flow spins</strong>.</p>'
-                    '<h3>Play matches for Yen</h3><p>Matches pay out Yen, the in-game currency. A normal Flow spin costs 2,000 Yen, so regular play keeps you rolling for free.</p>'
-                    '<h3>Quests and level rewards</h3><p>Levelling up and event quests regularly award spins. Check the quest board after every update.</p>'
-                    '<h3>Live events</h3><p>Seasonal events and mid-week drops often include extra spins and limited-time styles.</p>'
-                    '<h3>Robux</h3><p>Spin bundles can be bought, but never need to be. If you do buy, wait for a fresh update so your rolls cover the newest styles.</p></div>')
-            + block("lucky", "Lucky spins vs normal spins",
-                    '<div class="prose"><p>Lucky spins, the kind codes give, roll with much better odds of high-rarity results than normal spins. Save them for when you actually want an upgrade.</p></div>')
-            + block("chances", "Spin chances and pity",
-                    '<div class="prose"><p>World Class and Master styles are rare drops, well under 1% on a normal spin, and Lucky spins raise those odds substantially. Flows have a pity system: <strong>after 50 Flow spins you\'re guaranteed at least a Legendary</strong>.</p>'
-                    '<p>The developer adjusts rates between updates, so check the in-game spin screen for the exact current odds.</p></div>')
-            + block("level", "How to level up fast for more rewards",
-                    '<div class="prose"><ul><li>Play full matches. Leaving early cuts your rewards.</li><li>Complete daily and event quests first; they pay far more than single matches.</li>'
-                    '<li>Play with friends so you can coordinate, win more and finish quests together.</li><li>Reach level 10 early, since that unlocks code redemption.</li></ul></div>')
+                    '<div class="prose"><h3>1. Redeem codes</h3><p>Each new code usually gives 5 Lucky Style Spins, 5 Lucky Flow Spins or both. '
+                    'Codes drop with updates and milestones and expire within days, so redeem them as soon as you see them. '
+                    'We check for new ones every 30 minutes on the <a href="/">codes page</a>.</p>'
+                    '<h3>2. Play matches for Yen</h3><p>Every match pays Yen, and Yen buys normal spins. A normal Flow spin costs 2,000 Yen, '
+                    'so regular play keeps you spinning without spending anything.</p>'
+                    '<h3>3. Collect AFK rewards</h3><p>When the game has an AFK area open, a timer counts towards your next reward. '
+                    'Leaving your avatar there has paid out spins, including Lucky Flow Spins, over a few hours.</p>'
+                    '<h3>4. Finish quests and level up</h3><p>Daily quests, event quests and level-up rewards regularly include spins. '
+                    'Check the quest board after every update, since new quests usually arrive with it.</p>'
+                    '<h3>5. Join seasonal events</h3><p>Events such as Halloween and Christmas add their own spins and rewards. '
+                    'See <a href="#events">event spins</a> below.</p></div>')
+            + ad("in-content")
+            + block("without-codes", "How to get Lucky Spins without codes",
+                    '<div class="prose"><p>Codes are the only guaranteed free Lucky Spins, but you can still pick them up without one:</p>'
+                    '<ul><li><strong>AFK rewards</strong> are the steadiest source. Leave the game running while you do something else.</li>'
+                    '<li><strong>Event rewards</strong> often include Lucky Spins, especially on the event wheel.</li>'
+                    '<li><strong>Quests</strong> sometimes reward Lucky Spins, though this is rarer.</li></ul>'
+                    '<p>Lucky Spins are also sold for Robux in the shop. That is optional, and the free sources above are enough to keep rolling.</p></div>')
+            + block("lucky", "Lucky Spins vs normal spins",
+                    '<div class="prose"><p><strong>Lucky Spins</strong> have much better odds of rolling a Legendary, Mythic or World Class result than normal spins. '
+                    'They come as Lucky Style Spins and Lucky Flow Spins, and they cannot be bought with Yen.</p>'
+                    '<p><strong>Normal spins</strong> are the ones you buy with Yen. They are easy to get from playing, but rare results are much less likely.</p>'
+                    '<p>Use normal spins for everyday rolling and save Lucky Spins for when you want a real upgrade.</p></div>')
+            + block("use", "How to use Lucky Spins",
+                    '<ol class="steps"><li><div><strong>Open the Style or Flow tab</strong>Find it at the bottom of the lobby screen.</div></li>'
+                    '<li><div><strong>Check the odds</strong>Press the Lucky Odds button in the top-right corner to see the current chances.</div></li>'
+                    '<li><div><strong>Press Lucky Spin</strong>The result replaces the style or flow in your active slot, unless you have locked it.</div></li></ol>')
+            + block("chances", "Spin chances and flow pity",
+                    '<div class="prose"><p>World Class and Master results are rare, well under 1% on a normal spin, and Lucky Spins raise those odds substantially. '
+                    'The developer adjusts rates between updates, so the in-game Odds and Lucky Odds buttons are the only exact source.</p>'
+                    '<p>Flows have a pity system: <strong>after 50 Flow spins you are guaranteed at least a Legendary</strong>.</p></div>')
+            + block("events", "Halloween and Christmas event spins",
+                    '<div class="prose"><p>Seasonal events bring their own spins. During past events, logging in gave a free spin on the event wheel or crate in the lobby, '
+                    'and event quests and event currency paid for more. Event wheels can land on Lucky Spins, cash and limited cosmetics, '
+                    'and each has its own Odds button.</p><p>Event spins and limited styles leave when the event ends, so use them before then. '
+                    'The <a href="/next-update/">next update</a> page shows when the next one is due.</p></div>')
             + block("before", "Before you spin",
                     '<div class="prose"><ul><li><strong>Lock your slot</strong> if you own a style you want to keep, or a spin can replace it.</li>'
-                    '<li>Check the <a href="/tier-list/">tier list</a> so you know which results are worth keeping.</li>'
-                    '<li>Spin right after a Saturday update for a shot at the newest style.</li></ul></div>')
-            + block("scripts", "Are spin scripts or generators safe?",
-                    '<div class="prose"><p>No. "Infinite spins" scripts and spin generators break Roblox rules and can get your account banned. Many of them are built to steal accounts. The only free spins are from codes, play, quests and events.</p></div>'))
+                    '<li>Check the <a href="/tier-list/">tier list</a> so you know which <a href="/styles/">styles</a> and <a href="/flows/">flows</a> are worth keeping.</li>'
+                    '<li>Spin right after an update for a shot at the newest style.</li></ul></div>')
+            + block("scripts", "Spin scripts, glitches and infinite spins",
+                    '<div class="prose"><p>None of them are safe. "Infinite spins" scripts, spin glitches and spin generators break Roblox rules and can get your account banned. '
+                    'Many are built to steal accounts. The only real free spins come from codes, play, AFK rewards, quests and events.</p></div>')
+            + block("faq", "Free spins FAQ", faq_html(SPINS_FAQ)))
 
 
 def styles_body():
@@ -933,11 +989,13 @@ PAGES = [
          body=redeem_body, faq=REDEEM_FAQ, howto=True, blurb="Steps, the group requirement and fixes.",
          related=["/codes-not-working/", "/", "/free-spins/"]),
     dict(path="/free-spins/", out="free-spins/index.html", short="Free spins",
-         title="How to Get Free Lucky Spins in Blue Lock Rivals",
+         title=f"How to get free spins in Blue Lock Rivals ({MONTH_YEAR})",
          h1="How to get free spins in Blue Lock Rivals",
-         lede="Every free source of Lucky Style Spins and Flow Spins, how spin chances work, and how not to waste them.",
-         description="All the ways to get free Lucky Spins in Blue Lock Rivals: codes, Yen, quests and events, plus spin chances, flow pity and how to level up fast.",
-         body=spins_body, blurb="Codes, Yen, quests, events and pity.", related=["/", "/tier-list/", "/styles/"]),
+         lede="Every free source of Lucky Style Spins and Lucky Flow Spins, how the odds work and how not to waste them.",
+         description=(f"Every way to get free spins in Blue Lock Rivals: {TOTAL_SPINS + TOTAL_FLOWS} Lucky Spins from working codes, plus AFK, events, quests, Yen, odds and flow pity."
+                     if TOTAL_SPINS + TOTAL_FLOWS else "Every way to get free spins in Blue Lock Rivals: codes, AFK rewards, events, quests and Yen, plus spin odds and flow pity."),
+         body=spins_body, faq=SPINS_FAQ, blurb="Codes, AFK, quests, events and pity.",
+         related=["/", "/how-to-redeem/", "/tier-list/", "/styles/"]),
     dict(path="/styles/", out="styles/index.html", short="Styles",
          title=f"All Blue Lock Rivals Styles List & Rarities ({YEAR})",
          h1="Blue Lock Rivals styles list",

@@ -492,3 +492,8 @@ html[dir=rtl] ul:not([class]),html[dir=rtl] ol:not([class]){padding-left:0;paddi
 @media (max-width:900px){.langsw{margin-inline-start:auto}.topbar{gap:10px}}
 @media (max-width:420px){.topbar{gap:6px}.menu-btn{padding:0 10px;font-size:14px;height:40px}.langsw summary{font-size:13px}}
 @media (max-width:380px){.langsw summary::before{display:none}}
+/* free-spins page: code + reward list */
+.spin-codes{list-style:none;margin:0 0 12px;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:14px}
+.spin-codes li{display:flex;flex-direction:column;gap:8px;min-width:0}
+.spin-codes .codebox{width:100%}
+.sc-reward{font-weight:700;color:var(--ink-2);font-size:15.5px}

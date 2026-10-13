@@ -468,7 +468,8 @@
   "/"
  ],
  "Code": [
-  "/"
+  "/",
+  "/free-spins/"
  ],
  "Code not working?": [
   "/"
@@ -590,7 +591,7 @@
   "/guides/",
   "/updates/"
  ],
- "Codes, Yen, quests, events and pity.": [
+ "Codes, AFK, quests, events and pity.": [
   "/",
   "/author/muhammad-usman-siddiqui/",
   "/beginners-guide/",
@@ -633,13 +634,15 @@
   "/updates/"
  ],
  "Copy": [
-  "/"
+  "/",
+  "/free-spins/"
  ],
  "Copy all {0} codes": [
   "/"
  ],
  "Copy code {0}": [
-  "/"
+  "/",
+  "/free-spins/"
  ],
  "Discord and Trello": [
   "/",
@@ -1393,6 +1396,7 @@
   "/alerts/",
   "/author/muhammad-usman-siddiqui/",
   "/codes-not-working/",
+  "/free-spins/",
   "/guides/"
  ],
  "Styles": [
@@ -1639,16 +1643,19 @@
   "/updates/"
  ],
  "{0} Lucky Flow Spins": [
-  "/"
+  "/",
+  "/free-spins/"
  ],
  "{0} Lucky Flow Spins · Added {1}": [
   "/"
  ],
  "{0} Lucky Style Spins": [
-  "/"
+  "/",
+  "/free-spins/"
  ],
  "{0} Lucky Style Spins and {1} Lucky Flow Spins": [
-  "/"
+  "/",
+  "/free-spins/"
  ],
  "{0} Lucky Style Spins and {1} Lucky Flow Spins · Added {2}": [
   "/"
@@ -2349,100 +2356,172 @@
   "/flows/",
   "/styles/"
  ],
+ "<0>AFK rewards</0> are the steadiest source. Leave the game running while you do something else.": [
+  "/free-spins/"
+ ],
+ "<0>Check the odds</0>Press the Lucky Odds button in the top-right corner to see the current chances.": [
+  "/free-spins/"
+ ],
+ "<0>Event rewards</0> often include Lucky Spins, especially on the event wheel.": [
+  "/free-spins/"
+ ],
  "<0>Home</0><1>/</1>Free spins": [
   "/free-spins/"
  ],
  "<0>Lock your slot</0> if you own a style you want to keep, or a spin can replace it.": [
   "/free-spins/"
  ],
- "All the ways to get free Lucky Spins in Blue Lock Rivals: codes, Yen, quests and events, plus spin chances, flow pity and how to level up fast.": [
+ "<0>Lucky Spins</0> have much better odds of rolling a Legendary, Mythic or World Class result than normal spins. They come as Lucky Style Spins and Lucky Flow Spins, and they cannot be bought with Yen.": [
   "/free-spins/"
  ],
- "Are spin scripts or generators safe?": [
+ "<0>Normal spins</0> are the ones you buy with Yen. They are easy to get from playing, but rare results are much less likely.": [
+  "/free-spins/"
+ ],
+ "<0>Open the Style or Flow tab</0>Find it at the bottom of the lobby screen.": [
+  "/free-spins/"
+ ],
+ "<0>Press Lucky Spin</0>The result replaces the style or flow in your active slot, unless you have locked it.": [
+  "/free-spins/"
+ ],
+ "<0>Quests</0> sometimes reward Lucky Spins, though this is rarer.": [
+  "/free-spins/"
+ ],
+ "<0>The quickest free spins come from codes.</0> Right now {1} working codes give <2>{3} Lucky Style Spins and {4} Lucky Flow Spins</2>. After that, you can earn spins by playing matches for Yen, collecting AFK rewards, finishing quests and joining seasonal events.": [
   "/free-spins/"
  ],
  "Before you spin": [
   "/free-spins/"
  ],
- "Check the <0>tier list</0> so you know which results are worth keeping.": [
+ "Can you buy Lucky Spins with Yen?": [
   "/free-spins/"
  ],
- "Complete daily and event quests first; they pay far more than single matches.": [
+ "Can you get Lucky Spins without codes?": [
   "/free-spins/"
  ],
- "Every free source of Lucky Style Spins and Flow Spins, how spin chances work, and how not to waste them.": [
+ "Check the <0>tier list</0> so you know which <1>styles</1> and <2>flows</2> are worth keeping.": [
+  "/free-spins/"
+ ],
+ "Codes are the only guaranteed free Lucky Spins, but you can still pick them up without one:": [
+  "/free-spins/"
+ ],
+ "Copy a code, then redeem it in the Codes menu in the lobby. You need to be in the Roblox group and at level {0}. <1>See how to redeem</1>.": [
+  "/free-spins/"
+ ],
+ "Daily quests, event quests and level-up rewards regularly include spins. Check the quest board after every update, since new quests usually arrive with it.": [
+  "/free-spins/"
+ ],
+ "Do infinite spin scripts work?": [
+  "/free-spins/"
+ ],
+ "Each new code usually gives {0} Lucky Style Spins, {1} Lucky Flow Spins or both. Codes drop with updates and milestones and expire within days, so redeem them as soon as you see them. We check for new ones every {2} minutes on the <3>codes page</3>.": [
+  "/free-spins/"
+ ],
+ "Event spins and limited styles leave when the event ends, so use them before then. The <0>next update</0> page shows when the next one is due.": [
+  "/free-spins/"
+ ],
+ "Events such as Halloween and Christmas add their own spins and rewards. See <0>event spins</0> below.": [
+  "/free-spins/"
+ ],
+ "Every free source of Lucky Style Spins and Lucky Flow Spins, how the odds work and how not to waste them.": [
+  "/free-spins/"
+ ],
+ "Every match pays Yen, and Yen buys normal spins. A normal Flow spin costs {0} Yen, so regular play keeps you spinning without spending anything.": [
   "/free-spins/"
  ],
  "Every way to get free spins in Blue Lock Rivals": [
   "/free-spins/"
  ],
- "How to Get Free Lucky Spins in Blue Lock Rivals": [
+ "Every way to get free spins in Blue Lock Rivals: {0} Lucky Spins from working codes, plus AFK, events, quests, Yen, odds and flow pity.": [
+  "/free-spins/"
+ ],
+ "Flows have a pity system: <0>after {1} Flow spins you are guaranteed at least a Legendary</0>.": [
+  "/free-spins/"
+ ],
+ "Flows have one: after {0} Flow spins without a Legendary, the next one is guaranteed to be Legendary or better.": [
+  "/free-spins/"
+ ],
+ "Free spins FAQ": [
+  "/free-spins/"
+ ],
+ "Free spins from codes right now": [
+  "/free-spins/"
+ ],
+ "Halloween and Christmas event spins": [
+  "/free-spins/"
+ ],
+ "How many free spins can I get from codes?": [
+  "/free-spins/"
+ ],
+ "How to get Lucky Spins without codes": [
   "/free-spins/"
  ],
  "How to get free spins in Blue Lock Rivals": [
   "/free-spins/"
  ],
- "How to level up fast for more rewards": [
+ "How to get free spins in Blue Lock Rivals ({0})": [
   "/free-spins/"
  ],
- "Levelling up and event quests regularly award spins. Check the quest board after every update.": [
+ "How to use Lucky Spins": [
   "/free-spins/"
  ],
- "Live events": [
+ "Is there a spin pity in Blue Lock Rivals?": [
   "/free-spins/"
  ],
- "Lucky spins vs normal spins": [
+ "It changes as codes are added and expire. This page totals the working codes automatically, so the numbers at the top are always current.": [
   "/free-spins/"
  ],
- "Lucky spins, the kind codes give, roll with much better odds of high-rarity results than normal spins. Save them for when you actually want an upgrade.": [
+ "Lucky Spins are also sold for Robux in the shop. That is optional, and the free sources above are enough to keep rolling.": [
   "/free-spins/"
  ],
- "Matches pay out Yen, the in-game currency. A normal Flow spin costs {0} Yen, so regular play keeps you rolling for free.": [
+ "Lucky Spins vs normal spins": [
   "/free-spins/"
  ],
- "No. \"Infinite spins\" scripts and spin generators break Roblox rules and can get your account banned. Many of them are built to steal accounts. The only free spins are from codes, play, quests and events.": [
+ "No. Spin scripts, glitches and generators break Roblox rules, can get your account banned and are often built to steal accounts.": [
   "/free-spins/"
  ],
- "Play full matches. Leaving early cuts your rewards.": [
+ "No. Yen only buys normal spins. Lucky Spins come from codes, rewards and events, or from the Robux shop.": [
   "/free-spins/"
  ],
- "Play matches for Yen": [
+ "None of them are safe. \"Infinite spins\" scripts, spin glitches and spin generators break Roblox rules and can get your account banned. Many are built to steal accounts. The only real free spins come from codes, play, AFK rewards, quests and events.": [
   "/free-spins/"
  ],
- "Play with friends so you can coordinate, win more and finish quests together.": [
+ "Seasonal events bring their own spins. During past events, logging in gave a free spin on the event wheel or crate in the lobby, and event quests and event currency paid for more. Event wheels can land on Lucky Spins, cash and limited cosmetics, and each has its own Odds button.": [
   "/free-spins/"
  ],
- "Quests and level rewards": [
+ "Spin chances and flow pity": [
   "/free-spins/"
  ],
- "Reach level {0} early, since that unlocks code redemption.": [
+ "Spin right after an update for a shot at the newest style.": [
   "/free-spins/"
  ],
- "Redeem codes": [
+ "Spin scripts, glitches and infinite spins": [
   "/free-spins/"
  ],
- "Robux": [
+ "Use normal spins for everyday rolling and save Lucky Spins for when you want a real upgrade.": [
   "/free-spins/"
  ],
- "Seasonal events and mid-week drops often include extra spins and limited-time styles.": [
+ "When the game has an AFK area open, a timer counts towards your next reward. Leaving your avatar there has paid out spins, including Lucky Flow Spins, over a few hours.": [
   "/free-spins/"
  ],
- "Spin bundles can be bought, but never need to be. If you do buy, wait for a fresh update so your rolls cover the newest styles.": [
+ "World Class and Master results are rare, well under {0}% on a normal spin, and Lucky Spins raise those odds substantially. The developer adjusts rates between updates, so the in-game Odds and Lucky Odds buttons are the only exact source.": [
   "/free-spins/"
  ],
- "Spin chances and pity": [
+ "Yes, but more slowly. AFK rewards, some quests and seasonal events have all handed out Lucky Spins. Codes are still the quickest free source.": [
   "/free-spins/"
  ],
- "Spin right after a Saturday update for a shot at the newest style.": [
+ "{0}. Collect AFK rewards": [
   "/free-spins/"
  ],
- "The developer adjusts rates between updates, so check the in-game spin screen for the exact current odds.": [
+ "{0}. Finish quests and level up": [
   "/free-spins/"
  ],
- "The fastest source. Each new code usually gives {0} Lucky Style Spins, {1} Lucky Flow Spins, or both. Right now the <2>working codes</2> add up to <3>{4} style spins and {5} flow spins</3>.": [
+ "{0}. Join seasonal events": [
   "/free-spins/"
  ],
- "World Class and Master styles are rare drops, well under {0}% on a normal spin, and Lucky spins raise those odds substantially. Flows have a pity system: <1>after {2} Flow spins you're guaranteed at least a Legendary</1>.": [
+ "{0}. Play matches for Yen": [
+  "/free-spins/"
+ ],
+ "{0}. Redeem codes": [
   "/free-spins/"
  ],
  "<0>Home</0><1>/</1>All guides": [
