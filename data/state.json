@@ -1,8 +1,4 @@
 {
- "misses": {
-  "EPICSENDOU": 3,
-  "ONEMOREWEEK": 3,
-  "NELAIKUNEXT": 3
- },
+ "misses": {},
  "update_name": "NEL Aiku"
 }

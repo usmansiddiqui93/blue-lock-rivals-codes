@@ -1,42 +1,23 @@
 {
- "updated": "2026-10-12T09:30:00Z",
+ "updated": "2026-10-18T04:21:36Z",
  "last_checked": "2026-10-09T00:00:00Z",
- "active": [
+ "active": [],
+ "expired": [
   {
-   "code": "EPICSENDOU",
-   "reward": "7 Lucky Style Spins",
-   "spins": 7,
-   "flows": 0,
+   "code": "NELAIKUNEXT",
    "added": "2026-10-10",
-   "sources": [
-    "Beebom",
-    "Dexerto"
-   ]
+   "expired": "2026-10-18"
   },
   {
    "code": "ONEMOREWEEK",
-   "reward": "5 Lucky Flow Spins",
-   "spins": 0,
-   "flows": 5,
    "added": "2026-10-10",
-   "sources": [
-    "Beebom",
-    "Dexerto"
-   ]
+   "expired": "2026-10-18"
   },
   {
-   "code": "NELAIKUNEXT",
-   "reward": "5 Lucky Style Spins + 5 Lucky Flow Spins",
-   "spins": 5,
-   "flows": 5,
+   "code": "EPICSENDOU",
    "added": "2026-10-10",
-   "sources": [
-    "Beebom",
-    "Dexerto"
-   ]
-  }
- ],
- "expired": [
+   "expired": "2026-10-18"
+  },
   {
    "code": "ACEEATER",
    "added": "2026-10-04",
