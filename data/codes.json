@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-18T04:21:36Z",
+ "updated": "2026-10-25T05:14:49Z",
  "last_checked": "2026-10-09T00:00:00Z",
  "active": [],
  "expired": [
@@ -1022,6 +1022,18 @@
   },
   {
    "code": "3KLIKES"
+  },
+  {
+   "code": "SORRYFORDELAYAIKU"
+  },
+  {
+   "code": "HALLOWEEN"
+  },
+  {
+   "code": "WSNAKE"
+  },
+  {
+   "code": "NELAIKU"
   }
  ]
 }
