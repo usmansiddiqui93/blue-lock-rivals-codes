@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-22T08:45:50Z",
+ "updated": "2026-11-22T22:27:00Z",
  "last_checked": "2026-10-09T00:00:00Z",
  "active": [],
  "expired": [
@@ -1064,6 +1064,15 @@
   },
   {
    "code": "CROWTHEFTBACK"
+  },
+  {
+   "code": "KARASUREWORK"
+  },
+  {
+   "code": "BUGFIXES"
+  },
+  {
+   "code": "UBERSCONTINUES"
   }
  ]
 }
